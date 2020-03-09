@@ -1,5 +1,7 @@
 package cj.netos.document.openports.entities;
 
+import java.util.List;
+
 public class ChannelDocument {
     String id;
     String channel;

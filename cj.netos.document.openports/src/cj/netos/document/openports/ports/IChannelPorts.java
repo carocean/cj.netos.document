@@ -1,6 +1,7 @@
 package cj.netos.document.openports.ports;
 
 import cj.netos.document.openports.entities.ChannelDocument;
+import cj.netos.document.openports.entities.DocMedia;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
@@ -20,6 +21,20 @@ public interface IChannelPorts extends IOpenportService {
 
     @CjOpenport(usage = "移除文章")
     void removeDocument(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "文档标识", name = "docid")
+                    String docid
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "文章多媒体附件", command = "post")
+    void addDocumentMedia(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "多媒体信息", in = PKeyInRequest.content, name = "media")
+                    DocMedia media
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "清空文章多媒体文件")
+    void emptyDocumentMedia(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
                     String docid

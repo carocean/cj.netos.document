@@ -2,6 +2,7 @@ package cj.netos.document.ports;
 
 import cj.netos.document.IChannelService;
 import cj.netos.document.openports.entities.ChannelDocument;
+import cj.netos.document.openports.entities.DocMedia;
 import cj.netos.document.openports.ports.IChannelPorts;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
@@ -21,6 +22,16 @@ public class DefaultChannelPorts implements IChannelPorts {
     @Override
     public void removeDocument(ISecuritySession securitySession, String docid) throws CircuitException {
         channelService.removeDocument(securitySession.principal(), docid);
+    }
+
+    @Override
+    public void addDocumentMedia(ISecuritySession securitySession, DocMedia media) throws CircuitException {
+        channelService.addDocumentMedia(securitySession.principal(), media);
+    }
+
+    @Override
+    public void emptyDocumentMedia(ISecuritySession securitySession, String docid) throws CircuitException {
+        channelService.emptyDocumentMedia(securitySession.principal(), docid);
     }
 
     @Override

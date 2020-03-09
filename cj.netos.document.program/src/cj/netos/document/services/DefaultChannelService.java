@@ -5,6 +5,7 @@ import cj.lns.chip.sos.cube.framework.TupleDocument;
 import cj.netos.document.AbstractLinkService;
 import cj.netos.document.IChannelService;
 import cj.netos.document.openports.entities.ChannelDocument;
+import cj.netos.document.openports.entities.DocMedia;
 import cj.netos.document.openports.entities.DocumentComment;
 import cj.netos.document.openports.entities.DocumentLike;
 import cj.studio.ecm.annotation.CjService;
@@ -20,6 +21,9 @@ public class DefaultChannelService extends AbstractLinkService implements IChann
         if (StringUtil.isEmpty(document.getCreator())) {
             document.setCreator(principal);
         }
+        if (StringUtil.isEmpty(document.getId())) {
+            document.setId(UUID.randomUUID().toString());
+        }
         document.setCtime(System.currentTimeMillis());
         cube.saveDoc("network.channel.documents", new TupleDocument<>(document));
     }
@@ -28,6 +32,19 @@ public class DefaultChannelService extends AbstractLinkService implements IChann
     public void removeDocument(String principal, String docid) {
         ICube cube = cube(principal);
         cube.deleteDocOne("network.channel.documents", String.format("{'tuple.id':'%s'}", docid));
+    }
+
+    @Override
+    public void addDocumentMedia(String principal, DocMedia media) {
+        ICube cube = cube(principal);
+        media.setCtime(System.currentTimeMillis());
+        cube.saveDoc("network.channel.documents.medias", new TupleDocument<>(media));
+    }
+
+    @Override
+    public void emptyDocumentMedia(String principal, String docid) {
+        ICube cube = cube(principal);
+        cube.deleteDocOne("network.channel.documents.medias", String.format("{'tuple.docid':'%s'}", docid));
     }
 
     @Override
