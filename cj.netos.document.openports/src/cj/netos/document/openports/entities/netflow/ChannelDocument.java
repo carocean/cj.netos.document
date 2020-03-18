@@ -1,4 +1,6 @@
-package cj.netos.document.openports.entities;
+package cj.netos.document.openports.entities.netflow;
+
+import cj.netos.document.openports.entities.Location;
 
 import java.util.List;
 

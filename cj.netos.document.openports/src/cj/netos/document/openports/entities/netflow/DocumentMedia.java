@@ -1,12 +1,30 @@
-package cj.netos.document.openports.entities;
+package cj.netos.document.openports.entities.netflow;
 
-public class DocMedia {
+public class DocumentMedia {
+    String id;
     String docid;
     String type;
     String src;
     String text;
     String leading;
+    String channel;
     long ctime;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
     public String getDocid() {
         return docid;

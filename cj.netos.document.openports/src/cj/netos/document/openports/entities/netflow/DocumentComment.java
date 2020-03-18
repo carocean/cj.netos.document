@@ -1,4 +1,4 @@
-package cj.netos.document.openports.entities;
+package cj.netos.document.openports.entities.netflow;
 
 public class DocumentComment {
     String id;
