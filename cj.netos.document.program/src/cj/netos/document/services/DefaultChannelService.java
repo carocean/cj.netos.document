@@ -18,90 +18,97 @@ import java.util.UUID;
 @CjService(name = "channelService")
 public class DefaultChannelService extends AbstractLinkService implements IChannelService {
     @Override
-    public void publishDocument(String principal, ChannelDocument document) {
-        ICube cube = cube(principal);
+    public void publishDocument(String creator, ChannelDocument document) {
         if (StringUtil.isEmpty(document.getCreator())) {
-            document.setCreator(principal);
+            document.setCreator(creator);
         }
         if (StringUtil.isEmpty(document.getId())) {
             document.setId(UUID.randomUUID().toString());
         }
         document.setCtime(System.currentTimeMillis());
+        ICube cube = cube(document.getCreator());
         cube.saveDoc("network.channel.documents", new TupleDocument<>(document));
     }
 
     @Override
-    public void removeDocument(String principal, String docid) {
-        ICube cube = cube(principal);
+    public void removeDocument(String creator, String docid) {
+        ICube cube = cube(creator);
         cube.deleteDocOne("network.channel.documents", String.format("{'tuple.id':'%s'}", docid));
     }
 
     @Override
-    public void addDocumentMedia(String principal, DocumentMedia media) {
-        ICube cube = cube(principal);
+    public void addDocumentMedia(String creator, DocumentMedia media) {
+        ICube cube = cube(creator);
         media.setCtime(System.currentTimeMillis());
         cube.saveDoc("network.channel.documents.medias", new TupleDocument<>(media));
     }
 
     @Override
-    public void removeDocumentMedia(String principal, String docid, String mediaid) {
-        ICube cube = cube(principal);
+    public void removeDocumentMedia(String creator, String docid, String mediaid) {
+        ICube cube = cube(creator);
         cube.deleteDocOne("network.channel.documents.medias", String.format("{'tuple.docid':'%s','tuple.id':'%s'}", docid, mediaid));
     }
 
     @Override
-    public void emptyDocumentMedia(String principal, String docid) {
-        ICube cube = cube(principal);
+    public void emptyDocumentMedia(String creator, String docid) {
+        ICube cube = cube(creator);
         cube.deleteDocOne("network.channel.documents.medias", String.format("{'tuple.docid':'%s'}", docid));
     }
 
     @Override
-    public void likeDocument(String principal, String docid) {
-        ICube cube = cube(principal);
+    public void likeDocument(String liker, String docid, String channel, String creator) {
+        ICube cube = cube(creator);
         DocumentLike like = new DocumentLike();
         like.setCtime(System.currentTimeMillis());
-        like.setPerson(principal);
+        like.setPerson(liker);
+        like.setChannel(channel);
         like.setDocid(docid);
         cube.saveDoc("network.channel.documents.likes", new TupleDocument<>(like));
     }
 
     @Override
-    public void unlikeDocument(String principal, String docid) {
-        ICube cube = cube(principal);
-        cube.deleteDocOne("network.channel.documents.likes", String.format("{'tuple.docid':'%s','tuple.person':'%s'}", docid, principal));
+    public void unlikeDocument(String unliker, String docid, String channel, String creator) {
+        ICube cube = cube(creator);
+        cube.deleteDocOne("network.channel.documents.likes", String.format("{'tuple.channel':'%s','tuple.docid':'%s','tuple.person':'%s'}", channel, docid, unliker));
     }
 
     @Override
-    public void commentDocument(String principal, String docid, String commentid, String content) {
-        ICube cube = cube(principal);
+    public void commentDocument(String commenter, String docid, String channel, String creator, String commentid, String content) {
+        ICube cube = cube(creator);
         if (cube.tupleCount("network.channel.documents.comments", String.format("{'tuple.docid':'%s','tuple.id':'%s'}", docid, commentid)) > 0) {
-            CJSystem.logging().warn(getClass(), String.format("用户<%s>的评论标识已存在.%s", principal, commentid));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>的评论标识已存在.%s", commenter, commentid));
             return;
         }
         DocumentComment comment = new DocumentComment();
         comment.setId(commentid);
         comment.setCtime(System.currentTimeMillis());
-        comment.setPerson(principal);
+        comment.setPerson(commenter);
         comment.setDocid(docid);
+        comment.setChannel(channel);
         comment.setContent(content);
         cube.saveDoc("network.channel.documents.comments", new TupleDocument<>(comment));
         comment.getId();
     }
 
     @Override
-    public void uncommentDocument(String principal, String docid, String commentid) {
-        ICube cube = cube(principal);
-        cube.deleteDocOne("network.channel.documents.comments", String.format("{'tuple.docid':'%s','tuple.id':'%s'}", docid, commentid));
+    public void uncommentDocument(String commenter, String docid, String channel, String creator, String commentid) {
+        ICube cube = cube(creator);
+        cube.deleteDocOne("network.channel.documents.comments", String.format("{'tuple.channel':'%s','tuple.docid':'%s','tuple.id':'%s'}", channel, docid, commentid));
     }
 
     @Override
     public void addExtraActivity(String creator, String activitor, String channel, String docid) {
         ICube cube = cube(creator);
+        if (cube.tupleCount("network.channel.documents.activities", String.format("{'tuple.channel':'%s','tuple.docid':'%s','tuple.person':'%s'}", channel, docid, activitor)) > 0) {
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>已创建了步聚在文档<%s>", creator, docid));
+            return;
+        }
         DocumentActivity activity = new DocumentActivity();
         activity.setAtime(System.currentTimeMillis());
         activity.setChannel(channel);
         activity.setDocid(docid);
-        activity.setPerson(activitor);
+        activity.setCreator(creator);
+        activity.setActivitor(activitor);
         cube.saveDoc("network.channel.documents.activities", new TupleDocument<>(activity));
     }
 

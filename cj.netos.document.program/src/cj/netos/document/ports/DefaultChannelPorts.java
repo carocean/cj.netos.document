@@ -41,23 +41,23 @@ public class DefaultChannelPorts implements IChannelPorts {
     }
 
     @Override
-    public void likeDocument(ISecuritySession securitySession, String docid) throws CircuitException {
-        channelService.likeDocument(securitySession.principal(), docid);
+    public void likeDocument(ISecuritySession securitySession, String docid, String channel, String creator) throws CircuitException {
+        channelService.likeDocument(securitySession.principal(),docid,channel,creator);
     }
 
     @Override
-    public void unlikeDocument(ISecuritySession securitySession, String docid) throws CircuitException {
-        channelService.unlikeDocument(securitySession.principal(), docid);
+    public void unlikeDocument(ISecuritySession securitySession, String docid, String channel, String creator) throws CircuitException {
+        channelService.unlikeDocument(securitySession.principal(),docid,channel,creator);
     }
 
     @Override
-    public void commentDocument(ISecuritySession securitySession, String docid, String commentid, String content) throws CircuitException {
-        channelService.commentDocument(securitySession.principal(), docid, commentid, content);
+    public void commentDocument(ISecuritySession securitySession, String docid, String channel, String creator, String commentid, String content) throws CircuitException {
+        channelService.commentDocument(securitySession.principal(),docid,channel,creator,commentid,content);
     }
 
     @Override
-    public void uncommentDocument(ISecuritySession securitySession, String docid, String commentid) throws CircuitException {
-        channelService.uncommentDocument(securitySession.principal(), docid, commentid);
+    public void uncommentDocument(ISecuritySession securitySession, String docid, String channel, String creator, String commentid) throws CircuitException {
+        channelService.uncommentDocument(securitySession.principal(),docid,channel,creator,commentid);
     }
 
     @Override

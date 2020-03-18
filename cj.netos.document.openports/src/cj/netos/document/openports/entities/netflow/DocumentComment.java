@@ -5,7 +5,16 @@ public class DocumentComment {
     String person;
     String docid;
     String content;
+    String channel;
     long ctime;
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
     public String getId() {
         return id;

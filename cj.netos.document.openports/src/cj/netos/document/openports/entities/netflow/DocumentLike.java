@@ -3,7 +3,16 @@ package cj.netos.document.openports.entities.netflow;
 public class DocumentLike {
     String person;
     long ctime;
+    String channel;
     String docid;
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
     public String getPerson() {
         return person;

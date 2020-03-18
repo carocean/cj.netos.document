@@ -9,13 +9,13 @@ public interface IChannelService {
 
     void removeDocument(String principal, String docid);
 
-    void likeDocument(String principal, String docid);
+    void likeDocument(String liker, String docid, String channel, String creator);
 
-    void unlikeDocument(String principal, String docid);
+    void unlikeDocument(String unliker, String docid, String channel, String creator);
 
-    void commentDocument(String principal, String docid, String commentid, String content);
+    void commentDocument(String commenter, String docid, String channel, String creator, String commentid, String content);
 
-    void uncommentDocument(String principal, String docid, String commentid);
+    void uncommentDocument(String commenter, String docid, String channel, String creator, String commentid);
 
     void addDocumentMedia(String principal, DocumentMedia media);
 

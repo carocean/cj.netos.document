@@ -1,17 +1,26 @@
 package cj.netos.document.openports.entities.netflow;
 
 public class DocumentActivity {
-    String person;
-    String channel;
     String docid;
+    String creator;
+    String channel;
+    String activitor;
     long atime;
 
-    public String getPerson() {
-        return person;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setPerson(String person) {
-        this.person = person;
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public String getActivitor() {
+        return activitor;
+    }
+
+    public void setActivitor(String activitor) {
+        this.activitor = activitor;
     }
 
     public String getChannel() {

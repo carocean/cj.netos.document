@@ -54,14 +54,22 @@ public interface IChannelPorts extends IOpenportService {
     void likeDocument(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
-                    String docid
+                    String docid,
+            @CjOpenportParameter(usage = "文档所在管道号", name = "channel")
+                    String channel,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator
     ) throws CircuitException;
 
     @CjOpenport(usage = "管道文章取消点赞")
     void unlikeDocument(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
-                    String docid
+                    String docid,
+            @CjOpenportParameter(usage = "文档所在管道号", name = "channel")
+                    String channel,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator
     ) throws CircuitException;
 
     @CjOpenport(usage = "管道文章评论。注意评论标识冲突将被放弃")
@@ -69,6 +77,10 @@ public interface IChannelPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
                     String docid,
+            @CjOpenportParameter(usage = "文档所在管道号", name = "channel")
+                    String channel,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator,
             @CjOpenportParameter(usage = "评论标识", name = "commentid")
                     String commentid,
             @CjOpenportParameter(usage = "评论内容", name = "content")
@@ -80,6 +92,10 @@ public interface IChannelPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
                     String docid,
+            @CjOpenportParameter(usage = "文档所在管道号", name = "channel")
+                    String channel,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator,
             @CjOpenportParameter(usage = "评论标识", name = "commentid")
                     String commentid
     ) throws CircuitException;
