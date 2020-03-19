@@ -81,7 +81,7 @@ public class DefaultChannelPorts implements IChannelPorts {
     }
 
     @Override
-    public List<DocumentMedia> listExtraMedia(ISecuritySession securitySession, String docid, String creator, String channel, int limit, int offset) throws CircuitException {
-        return  channelService.listExtraMedia(creator, channel, docid, limit, offset);
+    public List<DocumentMedia> listExtraMedia(ISecuritySession securitySession, String docid, String creator, String channel) throws CircuitException {
+        return  channelService.listExtraMedia(creator, channel, docid);
     }
 }

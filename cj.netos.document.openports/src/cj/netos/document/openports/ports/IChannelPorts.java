@@ -164,10 +164,6 @@ public interface IChannelPorts extends IOpenportService {
             @CjOpenportParameter(usage = "文档创建者", name = "creator")
                     String creator,
             @CjOpenportParameter(usage = "管道", name = "channel")
-                    String channel,
-            @CjOpenportParameter(usage = "页大小", name = "limit")
-                    int limit,
-            @CjOpenportParameter(usage = "偏移", name = "offset")
-                    int offset
+                    String channel
     ) throws CircuitException;
 }

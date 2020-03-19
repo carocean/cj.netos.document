@@ -31,6 +31,6 @@ public interface IChannelService {
 
     List<DocumentActivity> pageExtraActivity(String creator, String channel, String docid, int limit, int offset);
 
-    List<DocumentMedia> listExtraMedia(String creator, String channel, String docid, int limit, int offset);
+    List<DocumentMedia> listExtraMedia(String creator, String channel, String docid);
 
 }

@@ -152,9 +152,9 @@ public class DefaultChannelService extends AbstractLinkService implements IChann
     }
 
     @Override
-    public List<DocumentMedia> listExtraMedia(String creator, String channel, String docid, int limit, int offset) {
+    public List<DocumentMedia> listExtraMedia(String creator, String channel, String docid) {
         ICube cube = cube(creator);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple network.channel.documents.medias %s where {'tuple.docid':'%s'}", limit, offset, DocumentMedia.class.getName(), docid);
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents.medias %s where {'tuple.docid':'%s'}",  DocumentMedia.class.getName(), docid);
         IQuery<DocumentMedia> query = cube.createQuery(cjql);
         List<IDocument<DocumentMedia>> docs = query.getResultList();
         List<DocumentMedia> medias = new ArrayList<>();
