@@ -11,6 +11,7 @@ import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.ultimate.util.StringUtil;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -97,18 +98,21 @@ public class DefaultChannelService extends AbstractLinkService implements IChann
     }
 
     @Override
-    public void addExtraActivity(String creator, String activitor, String channel, String docid) {
+    public void addExtraActivity(String creator, String activitor, String channel, String docid, String action, String attach, BigDecimal wy) {
         ICube cube = cube(creator);
         if (cube.tupleCount("network.channel.documents.activities", String.format("{'tuple.channel':'%s','tuple.docid':'%s','tuple.person':'%s'}", channel, docid, activitor)) > 0) {
             CJSystem.logging().warn(getClass(), String.format("用户<%s>已创建了步聚在文档<%s>", creator, docid));
             return;
         }
         DocumentActivity activity = new DocumentActivity();
-        activity.setAtime(System.currentTimeMillis());
         activity.setChannel(channel);
         activity.setDocid(docid);
         activity.setCreator(creator);
         activity.setActivitor(activitor);
+        activity.setCtime(System.currentTimeMillis());
+        activity.setAction(action);
+        activity.setAttach(attach);
+        activity.setWy(wy);
         cube.saveDoc("network.channel.documents.activities", new TupleDocument<>(activity));
     }
 
@@ -141,7 +145,7 @@ public class DefaultChannelService extends AbstractLinkService implements IChann
     @Override
     public List<DocumentActivity> pageExtraActivity(String creator, String channel, String docid, int limit, int offset) {
         ICube cube = cube(creator);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple network.channel.documents.activities %s where {'tuple.docid':'%s'}", limit, offset, DocumentActivity.class.getName(), docid);
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':1}).limit(%s).skip(%s) from tuple network.channel.documents.activities %s where {'tuple.docid':'%s'}", limit, offset, DocumentActivity.class.getName(), docid);
         IQuery<DocumentActivity> query = cube.createQuery(cjql);
         List<IDocument<DocumentActivity>> docs = query.getResultList();
         List<DocumentActivity> activities = new ArrayList<>();

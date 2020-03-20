@@ -9,6 +9,7 @@ import cj.studio.openport.annotations.CjOpenport;
 import cj.studio.openport.annotations.CjOpenportParameter;
 import cj.studio.openport.annotations.CjOpenports;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @CjOpenports(usage = "管道服务")
@@ -108,7 +109,13 @@ public interface IChannelPorts extends IOpenportService {
             @CjOpenportParameter(usage = "文档创建者", name = "creator")
                     String creator,
             @CjOpenportParameter(usage = "管道", name = "channel")
-                    String channel
+                    String channel,
+            @CjOpenportParameter(usage = "流转动作：arrive,send.comment,send.like", name = "action")
+                    String action,
+            @CjOpenportParameter(usage = "流转附件说明", name = "attach")
+                    String attach,
+            @CjOpenportParameter(usage = "获取的洇金，纹银", name = "wy")
+                    BigDecimal wy
     ) throws CircuitException;
 
     @CjOpenport(usage = "分页点赞")

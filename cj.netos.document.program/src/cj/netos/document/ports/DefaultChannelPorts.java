@@ -8,6 +8,7 @@ import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.ISecuritySession;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @CjService(name = "/network/channel.service")
@@ -42,37 +43,37 @@ public class DefaultChannelPorts implements IChannelPorts {
 
     @Override
     public void likeDocument(ISecuritySession securitySession, String docid, String channel, String creator) throws CircuitException {
-        channelService.likeDocument(securitySession.principal(),docid,channel,creator);
+        channelService.likeDocument(securitySession.principal(), docid, channel, creator);
     }
 
     @Override
     public void unlikeDocument(ISecuritySession securitySession, String docid, String channel, String creator) throws CircuitException {
-        channelService.unlikeDocument(securitySession.principal(),docid,channel,creator);
+        channelService.unlikeDocument(securitySession.principal(), docid, channel, creator);
     }
 
     @Override
     public void commentDocument(ISecuritySession securitySession, String docid, String channel, String creator, String commentid, String content) throws CircuitException {
-        channelService.commentDocument(securitySession.principal(),docid,channel,creator,commentid,content);
+        channelService.commentDocument(securitySession.principal(), docid, channel, creator, commentid, content);
     }
 
     @Override
     public void uncommentDocument(ISecuritySession securitySession, String docid, String channel, String creator, String commentid) throws CircuitException {
-        channelService.uncommentDocument(securitySession.principal(),docid,channel,creator,commentid);
+        channelService.uncommentDocument(securitySession.principal(), docid, channel, creator, commentid);
     }
 
     @Override
-    public void addExtraActivity(ISecuritySession securitySession, String docid, String creator, String channel) throws CircuitException {
-        channelService.addExtraActivity(creator,securitySession.principal(), channel, docid);
+    public void addExtraActivity(ISecuritySession securitySession, String docid, String creator, String channel, String action, String attach, BigDecimal wy) throws CircuitException {
+        channelService.addExtraActivity(creator, securitySession.principal(), channel, docid, action, attach, wy);
     }
 
     @Override
     public List<DocumentLike> pageExtraLike(ISecuritySession securitySession, String docid, String creator, String channel, int limit, int offset) throws CircuitException {
-       return channelService.pageExtraLike(creator, channel, docid, limit, offset);
+        return channelService.pageExtraLike(creator, channel, docid, limit, offset);
     }
 
     @Override
     public List<DocumentComment> pageExtraComment(ISecuritySession securitySession, String docid, String creator, String channel, int limit, int offset) throws CircuitException {
-        return  channelService.pageExtraComment(creator, channel, docid, limit, offset);
+        return channelService.pageExtraComment(creator, channel, docid, limit, offset);
     }
 
     @Override
@@ -82,6 +83,6 @@ public class DefaultChannelPorts implements IChannelPorts {
 
     @Override
     public List<DocumentMedia> listExtraMedia(ISecuritySession securitySession, String docid, String creator, String channel) throws CircuitException {
-        return  channelService.listExtraMedia(creator, channel, docid);
+        return channelService.listExtraMedia(creator, channel, docid);
     }
 }

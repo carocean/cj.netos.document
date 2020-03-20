@@ -2,6 +2,7 @@ package cj.netos.document;
 
 import cj.netos.document.openports.entities.netflow.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IChannelService {
@@ -23,7 +24,7 @@ public interface IChannelService {
 
     void removeDocumentMedia(String principal, String docid, String mediaid);
 
-    void addExtraActivity(String creator,String activitor, String channel, String docid);
+    void addExtraActivity(String creator, String activitor, String channel, String docid, String action, String attach, BigDecimal wy);
 
     List<DocumentLike> pageExtraLike(String creator, String channel, String docid, int limit, int offset);
 

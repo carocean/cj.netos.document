@@ -1,11 +1,48 @@
 package cj.netos.document.openports.entities.netflow;
 
+import java.math.BigDecimal;
+
 public class DocumentActivity {
     String docid;
     String creator;
     String channel;
     String activitor;
-    long atime;
+    String action;
+    String attach;
+    long ctime;
+    BigDecimal wy;
+
+    public BigDecimal getWy() {
+        return wy;
+    }
+
+    public void setWy(BigDecimal wy) {
+        this.wy = wy;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getAttach() {
+        return attach;
+    }
+
+    public void setAttach(String attach) {
+        this.attach = attach;
+    }
+
+    public long getCtime() {
+        return ctime;
+    }
+
+    public void setCtime(long ctime) {
+        this.ctime = ctime;
+    }
 
     public String getCreator() {
         return creator;
@@ -37,13 +74,5 @@ public class DocumentActivity {
 
     public void setDocid(String docid) {
         this.docid = docid;
-    }
-
-    public long getAtime() {
-        return atime;
-    }
-
-    public void setAtime(long atime) {
-        this.atime = atime;
     }
 }
