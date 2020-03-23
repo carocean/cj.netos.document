@@ -4,7 +4,7 @@ import cj.lns.chip.sos.cube.framework.ICube;
 import cj.lns.chip.sos.cube.framework.IDocument;
 import cj.lns.chip.sos.cube.framework.IQuery;
 import cj.lns.chip.sos.cube.framework.TupleDocument;
-import cj.netos.document.AbstractLinkService;
+import cj.netos.document.AbstractService;
 import cj.netos.document.IChannelService;
 import cj.netos.document.openports.entities.netflow.*;
 import cj.studio.ecm.CJSystem;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @CjService(name = "channelService")
-public class DefaultChannelService extends AbstractLinkService implements IChannelService {
+public class DefaultChannelService extends AbstractService implements IChannelService {
     @Override
     public void publishDocument(String creator, ChannelDocument document) {
         if (StringUtil.isEmpty(document.getCreator())) {

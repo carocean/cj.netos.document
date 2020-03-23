@@ -5,7 +5,7 @@ import cj.lns.chip.sos.cube.framework.ICube;
 import cj.lns.chip.sos.disk.INetDisk;
 import cj.studio.ecm.annotation.CjServiceRef;
 
-public class AbstractLinkService {
+public class AbstractService {
     @CjServiceRef(refByName = "mongodb.netos")
     INetDisk disk;
 
