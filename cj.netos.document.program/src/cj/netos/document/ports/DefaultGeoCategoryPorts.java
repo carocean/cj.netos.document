@@ -1,6 +1,7 @@
 package cj.netos.document.ports;
 
 import cj.netos.document.IGeoCategoryService;
+import cj.netos.document.openports.entities.GeoCategoryMoveMode;
 import cj.netos.document.openports.entities.geo.GeoCategory;
 import cj.netos.document.openports.entities.geo.GeoCategoryApp;
 import cj.netos.document.openports.ports.IGeoCategoryPorts;
@@ -16,7 +17,7 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
     @CjServiceRef
     IGeoCategoryService geoCategoryService;
 
-    private void _demandAdministratorsRights(ISecuritySession securitySession) throws CircuitException {
+    private void _demandDistrictRights(ISecuritySession securitySession) throws CircuitException {
         boolean hasRights = false;
         for (int i = 0; i < securitySession.roleCount(); i++) {
             String role = securitySession.role(i);
@@ -31,15 +32,17 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
     }
 
     @Override
-    public void createCategory(ISecuritySession securitySession, String id, String title, String entityClass) throws CircuitException {
-        _demandAdministratorsRights(securitySession);
+    public void createCategory(ISecuritySession securitySession, String id, String title, String entityClass, GeoCategoryMoveMode moveMode, int sort) throws CircuitException {
+        _demandDistrictRights(securitySession);
         if (geoCategoryService.exists(id)) {
             throw new CircuitException("500", String.format("已存在分类：%s %s", id, title));
         }
         GeoCategory category = new GeoCategory();
         category.setEntityClass(entityClass);
         category.setId(id);
+        category.setMoveMode(moveMode);
         category.setTitle(title);
+        category.setSort(sort);
         category.setCreator(securitySession.principal());
         category.setCtime(System.currentTimeMillis());
         this.geoCategoryService.add(category);
@@ -47,7 +50,7 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
 
     @Override
     public void removeCategory(ISecuritySession securitySession, String id) throws CircuitException {
-        _demandAdministratorsRights(securitySession);
+        _demandDistrictRights(securitySession);
         this.geoCategoryService.remove(id);
     }
 
@@ -73,13 +76,13 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
 
     @Override
     public void reloadCategories(ISecuritySession securitySession) throws CircuitException {
-        _demandAdministratorsRights(securitySession);
+        _demandDistrictRights(securitySession);
         geoCategoryService.reloadCategories();
     }
 
     @Override
-    public void addGeoCategoryApp(ISecuritySession securitySession,String on, String id, String category, String title, String leading, String path) throws CircuitException {
-        _demandAdministratorsRights(securitySession);
+    public void addGeoCategoryApp(ISecuritySession securitySession, String on, String id, String category, String title, String leading, String path) throws CircuitException {
+        _demandDistrictRights(securitySession);
         if (geoCategoryService.existsApp(on, category, id)) {
             throw new CircuitException("500", String.format("分类<%s>下已存在应用<%s>在端:%s", category, id, on));
         }
@@ -95,13 +98,13 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
     }
 
     @Override
-    public void removeGeoCategoryApp(ISecuritySession securitySession,String on, String id, String category) throws CircuitException {
-        _demandAdministratorsRights(securitySession);
-        geoCategoryService.removeGeoCategoryApp(on,category,id);
+    public void removeGeoCategoryApp(ISecuritySession securitySession, String on, String id, String category) throws CircuitException {
+        _demandDistrictRights(securitySession);
+        geoCategoryService.removeGeoCategoryApp(on, category, id);
     }
 
     @Override
-    public List<GeoCategoryApp> listGeoCategoryApp(ISecuritySession securitySession,String on, String category) throws CircuitException {
-        return geoCategoryService.listGeoCategoryApp(on,category);
+    public List<GeoCategoryApp> listGeoCategoryApp(ISecuritySession securitySession, String on, String category) throws CircuitException {
+        return geoCategoryService.listGeoCategoryApp(on, category);
     }
 }
