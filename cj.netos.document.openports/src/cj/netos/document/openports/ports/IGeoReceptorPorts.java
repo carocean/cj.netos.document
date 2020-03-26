@@ -24,7 +24,7 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "分类标识", name = "leading") String leading,
             @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location,
             @CjOpenportParameter(usage = "距中心点矩离，单位为米", name = "radius") double radius,
-            @CjOpenportParameter(usage = "更新距离仅在mobiles分类下的感知器有用，默认10米", name = "uDistance",defaultValue = "10") int uDistance
+            @CjOpenportParameter(usage = "更新距离仅在mobiles分类下的感知器有用，默认10米", name = "uDistance", defaultValue = "10") int uDistance
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除地理感知器")
@@ -48,6 +48,15 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
             @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "半径", name = "radius") double radius
+    ) throws CircuitException;
+
+
+    @CjOpenport(usage = "更新图标")
+    void updateLeading(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
+            @CjOpenportParameter(usage = "图标地址", name = "leading") String leading
     ) throws CircuitException;
 
     @CjOpenport(usage = "获取移动设备感知器")

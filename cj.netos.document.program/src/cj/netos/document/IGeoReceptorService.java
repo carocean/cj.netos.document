@@ -16,9 +16,9 @@ public interface IGeoReceptorService {
 
     GeoReceptor get(String category, String id);
 
-    void updateLocation(String category, String id, LatLng location);
+    void updateLocation(String creator,String category, String id, LatLng location);
 
-    void updateRadius(String category, String id, double radius);
+    void updateRadius(String creator,String category, String id, double radius);
 
     GeoReceptor getMobileGeoReceptor(String person, String device);
 
@@ -33,5 +33,7 @@ public interface IGeoReceptorService {
     void removeObserver(String id, String category, String observer);
 
     List<GeoObserver> pageObserver(String id, String category, long limit, long offset);
+
+    void updateLeading(String creator, String category, String id, String leading);
 
 }

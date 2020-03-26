@@ -73,7 +73,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
             CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
             return;
         }
-        geoReceptorService.updateLocation(category, id, location);
+        geoReceptorService.updateLocation(securitySession.principal(), category, id, location);
     }
 
     @Override
@@ -87,7 +87,21 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
             CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
             return;
         }
-        geoReceptorService.updateRadius(category, id, radius);
+        geoReceptorService.updateRadius(securitySession.principal(), category, id, radius);
+    }
+
+    @Override
+    public void updateLeading(ISecuritySession securitySession, String id, String category, String leading) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, id);
+        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
+            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
+            return;
+        }
+        geoReceptorService.updateLeading(securitySession.principal(), category, id, leading);
     }
 
     @Override

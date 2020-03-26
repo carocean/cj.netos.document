@@ -26,26 +26,30 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     @CjServiceRef
     IGeoCategoryService geoCategoryService;
 
+    String _getColName(String category) {
+        return String.format("geo.receptor.%s", category);
+    }
+
     @Override
     public boolean exists(String category, String id) {
-        return home.tupleCount(category, String.format("{'tuple.id':'%s'}", id)) > 0;
+        return home.tupleCount(_getColName(category), String.format("{'tuple.id':'%s'}", id)) > 0;
     }
 
     @Override
     public void add(String category, GeoReceptor receptor) {
-        home.saveDoc(category, new TupleDocument<>(receptor));
+        home.saveDoc(_getColName(category), new TupleDocument<>(receptor));
     }
 
     @Override
     public void remove(String category, String id) {
-        home.deleteDocOne(category, String.format("{'tuple.id':'%s'}", id));
+        home.deleteDocOne(_getColName(category), String.format("{'tuple.id':'%s'}", id));
     }
 
     @Override
     public GeoReceptor get(String category, String id) {
         String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'?(id)'}");
         IQuery<GeoReceptor> query = home.createQuery(cjql);
-        query.setParameter("colname", category);
+        query.setParameter("colname", _getColName(category));
         query.setParameter("clazz", GeoReceptor.class.getName());
         query.setParameter("id", id);
         IDocument<GeoReceptor> doc = query.getSingleResult();
@@ -56,24 +60,31 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void updateLocation(String category, String id, LatLng location) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s'}", id));
+    public void updateLocation(String creator,String category, String id, LatLng location) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
-        home.updateDocOne(category, filter, update);
+        home.updateDocOne(_getColName(category), filter, update);
     }
 
     @Override
-    public void updateRadius(String category, String id, double radius) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s'}", id));
+    public void updateRadius(String creator,String category, String id, double radius) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.radius':'%s'}}", radius));
-        home.updateDocOne(category, filter, update);
+        home.updateDocOne(_getColName(category), filter, update);
+    }
+
+    @Override
+    public void updateLeading(String creator, String category, String id, String leading) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+        Bson update = Document.parse(String.format("{'$set':{'tuple.leading':'%s'}}", leading));
+        home.updateDocOne(_getColName(category), filter, update);
     }
 
     @Override
     public GeoReceptor getMobileGeoReceptor(String person, String device) {
         String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.entity.person':'?(person)','tuple.entity.device':'?(device)'}");
         IQuery<GeoReceptor> query = home.createQuery(cjql);
-        query.setParameter("colname", "mobiles");
+        query.setParameter("colname", _getColName("mobiles"));
         query.setParameter("clazz", GeoReceptor.class.getName());
         query.setParameter("person", person);
         query.setParameter("device", device);
@@ -88,19 +99,19 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     public void updateMobileLocation(String person, String device, LatLng location) {
         Bson filter = Document.parse(String.format("{'tuple.entity.person':'%s','tuple.entity.device':'%s'}", person, device));
         Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
-        home.updateDocOne("mobiles", filter, update);
+        home.updateDocOne(_getColName("mobiles"), filter, update);
     }
 
     @Override
     public void updateMobileRadius(String person, String device, double radius) {
         Bson filter = Document.parse(String.format("{'tuple.entity.person':'%s','tuple.entity.device':'%s'}", person, device));
         Bson update = Document.parse(String.format("{'$set':{'tuple.radius':'%s'}}", radius));
-        home.updateDocOne("mobiles", filter, update);
+        home.updateDocOne(_getColName("mobiles"), filter, update);
     }
 
     @Override
     public void addObserver(String id, String category, String observer) {
-        String colname = String.format("%s.observers", category);
+        String colname = String.format("%s.observers", _getColName(category));
         GeoObserver geoObserver = new GeoObserver();
         geoObserver.setObserver(observer);
         geoObserver.setReceptor(id);
@@ -110,13 +121,13 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     @Override
     public void removeObserver(String id, String category, String observer) {
-        String colname = String.format("%s.observers", category);
+        String colname = String.format("%s.observers", _getColName(category));
         home.deleteDocOne(colname, String.format("{'tuple.receptor':'%s','tuple.observer':'%s'}", id, observer));
     }
 
     @Override
     public List<GeoObserver> pageObserver(String id, String category, long limit, long offset) {
-        String colname = String.format("%s.observers", category);
+        String colname = String.format("%s.observers", _getColName(category));
         String cjql = String.format("select {'tuple':'*'}.limit(?(limit)).skip(?(skip)) from tuple ?(colname) ?(clazz) where {'tuple.receptor':'?(receptor)'}");
         IQuery<GeoObserver> query = home.createQuery(cjql);
         query.setParameter("colname", colname);
