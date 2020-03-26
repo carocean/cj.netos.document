@@ -8,10 +8,10 @@ import cj.ultimate.util.StringUtil;
 public class GeoCategory {
     String id;
     String title;
-    String entityClass;
     String creator;
     int sort;
     long ctime;
+    double defaultRadius;
     GeoCategoryMoveMode moveMode;
 
     public String getId() {
@@ -20,6 +20,14 @@ public class GeoCategory {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public double getDefaultRadius() {
+        return defaultRadius;
+    }
+
+    public void setDefaultRadius(double defaultRadius) {
+        this.defaultRadius = defaultRadius;
     }
 
     public GeoCategoryMoveMode getMoveMode() {
@@ -60,26 +68,5 @@ public class GeoCategory {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getEntityClass() {
-        return entityClass;
-    }
-
-    public void setEntityClass(String entityClass) {
-        this.entityClass = entityClass;
-    }
-
-
-    public Object createEntityByJson(String entityJson) throws CircuitException {
-        if (StringUtil.isEmpty(entityClass)) {
-            throw new CircuitException("404", "分类缺少实体类型定义:" + id);
-        }
-        try {
-            Class<?> clazz = Class.forName(entityClass);
-            return new Gson().fromJson(entityJson, clazz);
-        } catch (ClassNotFoundException e) {
-            throw new CircuitException("500", e);
-        }
     }
 }

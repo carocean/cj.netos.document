@@ -1,15 +1,13 @@
 package cj.netos.document.openports.entities.netflow;
 
-import cj.netos.document.openports.entities.Location;
-
-import java.util.List;
+import cj.netos.document.openports.entities.LatLng;
 
 public class ChannelDocument {
     String id;
     String channel;
     String creator;
     String content;
-    Location location;
+    LatLng location;
     long ctime;
     double wy;
 
@@ -45,11 +43,11 @@ public class ChannelDocument {
         this.content = content;
     }
 
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 

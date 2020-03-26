@@ -1,7 +1,7 @@
 package cj.netos.document.openports.ports;
 
 import cj.netos.document.openports.entities.GeoObjectResponse;
-import cj.netos.document.openports.entities.Location;
+import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
 import cj.studio.ecm.net.CircuitException;
@@ -19,10 +19,12 @@ public interface IGeoReceptorPorts extends IOpenportService {
     void addGeoReceptor(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分类标识", name = "title") String title,
             @CjOpenportParameter(usage = "分类标识", name = "category") String category,
-            @CjOpenportParameter(usage = "位置", name = "location", type = Location.class) Location location,
+            @CjOpenportParameter(usage = "分类标识", name = "leading") String leading,
+            @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location,
             @CjOpenportParameter(usage = "距中心点矩离，单位为米", name = "radius") double radius,
-            @CjOpenportParameter(usage = "实体的json字符串，其类型与分类对应，如一个店、一辆出租车、一棵树", name = "entity") String entity
+            @CjOpenportParameter(usage = "更新距离仅在mobiles分类下的感知器有用，默认10米", name = "uDistance",defaultValue = "10") int uDistance
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除地理感知器")
@@ -37,7 +39,7 @@ public interface IGeoReceptorPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
             @CjOpenportParameter(usage = "分类标识", name = "category") String category,
-            @CjOpenportParameter(usage = "位置", name = "location") Location location
+            @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location
     ) throws CircuitException;
 
     @CjOpenport(usage = "更新半径")
@@ -56,7 +58,7 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "更新移动设备感知器位置")
     void updateMobileLocation(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "位置", name = "location") Location location
+            @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location
     ) throws CircuitException;
 
     @CjOpenport(usage = "更新移动设备感知器中心矩离")

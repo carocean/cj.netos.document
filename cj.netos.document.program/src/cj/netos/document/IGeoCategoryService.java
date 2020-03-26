@@ -1,6 +1,5 @@
 package cj.netos.document;
 
-import cj.netos.document.openports.entities.Location;
 import cj.netos.document.openports.entities.geo.GeoCategory;
 import cj.netos.document.openports.entities.geo.GeoCategoryApp;
 
@@ -19,7 +18,6 @@ public interface IGeoCategoryService {
 
     void updateCategoryTitle(String id, String title);
 
-    void updateCategoryEntity(String id, String entityClass);
 
     void reloadCategories();
 

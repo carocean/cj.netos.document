@@ -3,17 +3,17 @@ package cj.netos.document.ports;
 import cj.netos.document.IGeoCategoryService;
 import cj.netos.document.IGeoReceptorService;
 import cj.netos.document.openports.entities.GeoObjectResponse;
-import cj.netos.document.openports.entities.Location;
+import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.GeoCategory;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
-import cj.netos.document.openports.entities.geo.MobileGeoEntity;
 import cj.netos.document.openports.ports.IGeoReceptorPorts;
 import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.ISecuritySession;
+import cj.ultimate.gson2.com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     IGeoReceptorService geoReceptorService;
 
     @Override
-    public void addGeoReceptor(ISecuritySession securitySession, String id, String category, Location location, double radius, String entity) throws CircuitException {
+    public void addGeoReceptor(ISecuritySession securitySession, String id, String title, String category, String leading, LatLng location, double radius, int uDistance) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
@@ -35,13 +35,16 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
             throw new CircuitException("500", String.format("已存在地理感知器:%s 在分类:%s", id, category));
         }
         GeoReceptor receptor = new GeoReceptor();
-        receptor.setCtime(System.currentTimeMillis());
-        receptor.setId(id);
-        receptor.setLocation(location);
-        receptor.setRadius(radius);
         receptor.setCreator(securitySession.principal());
-        Object newEntity = geoCategory.createEntityByJson(entity);
-        receptor.setEntity(newEntity);
+        receptor.setRadius(radius);
+        receptor.setId(id);
+        receptor.setCtime(System.currentTimeMillis());
+        receptor.setCategory(category);
+        receptor.setDevice((String) securitySession.property("device"));
+        receptor.setLeading(leading);
+        receptor.setLocation(location);
+        receptor.setTitle(title);
+        receptor.setuDistance(uDistance);
         geoReceptorService.add(category, receptor);
     }
 
@@ -60,7 +63,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public void updateLocation(ISecuritySession securitySession, String id, String category, Location location) throws CircuitException {
+    public void updateLocation(ISecuritySession securitySession, String id, String category, LatLng location) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
@@ -98,7 +101,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public void updateMobileLocation(ISecuritySession securitySession, Location location) throws CircuitException {
+    public void updateMobileLocation(ISecuritySession securitySession, LatLng location) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get("mobiles");
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:mobiles"));
@@ -126,16 +129,16 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
 
     @Override
     public void addObserver(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        this.geoReceptorService.addObserver(id,category,securitySession.principal());
+        this.geoReceptorService.addObserver(id, category, securitySession.principal());
     }
 
     @Override
     public void removeObserver(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        this.geoReceptorService.removeObserver(id,category,securitySession.principal());
+        this.geoReceptorService.removeObserver(id, category, securitySession.principal());
     }
 
     @Override
     public List<GeoObserver> pageObserver(ISecuritySession securitySession, String id, String category, long limit, long offset) throws CircuitException {
-        return this.geoReceptorService.pageObserver(id,category,limit,offset);
+        return this.geoReceptorService.pageObserver(id, category, limit, offset);
     }
 }

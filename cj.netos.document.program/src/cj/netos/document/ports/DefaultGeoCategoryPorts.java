@@ -32,17 +32,20 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
     }
 
     @Override
-    public void createCategory(ISecuritySession securitySession, String id, String title, String entityClass, GeoCategoryMoveMode moveMode, int sort) throws CircuitException {
+    public void createCategory(ISecuritySession securitySession, String id, String title,  GeoCategoryMoveMode moveMode, double defaultRadius, int sort) throws CircuitException {
         _demandDistrictRights(securitySession);
         if (geoCategoryService.exists(id)) {
             throw new CircuitException("500", String.format("已存在分类：%s %s", id, title));
         }
+        if (moveMode == null) {
+            moveMode = GeoCategoryMoveMode.unmoveable;
+        }
         GeoCategory category = new GeoCategory();
-        category.setEntityClass(entityClass);
         category.setId(id);
         category.setMoveMode(moveMode);
         category.setTitle(title);
         category.setSort(sort);
+        category.setDefaultRadius(defaultRadius < 0 ? 500 : defaultRadius);
         category.setCreator(securitySession.principal());
         category.setCtime(System.currentTimeMillis());
         this.geoCategoryService.add(category);
@@ -67,11 +70,6 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
     @Override
     public void updateCategoryTitle(ISecuritySession securitySession, String id, String title) throws CircuitException {
         geoCategoryService.updateCategoryTitle(id, title);
-    }
-
-    @Override
-    public void updateCategoryEntity(ISecuritySession securitySession, String id, String entityClass) throws CircuitException {
-        geoCategoryService.updateCategoryEntity(id, entityClass);
     }
 
     @Override

@@ -3,14 +3,14 @@ package cj.netos.document.openports.entities;
 import java.util.Arrays;
 import java.util.List;
 
-public class Coordinate {
+public class LatLng {
     double longitude;//经度
     double latitude;//纬度
 
-    public Coordinate() {
+    public LatLng() {
     }
 
-    public Coordinate(double longitude, double latitude) {
+    public LatLng(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
     }

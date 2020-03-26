@@ -1,6 +1,6 @@
 package cj.netos.document.openports.entities.market;
 
-import cj.netos.document.openports.entities.Location;
+import cj.netos.document.openports.entities.LatLng;
 
 /**
  * 卖场+ 定义信息
@@ -8,7 +8,7 @@ import cj.netos.document.openports.entities.Location;
 public class StorePlusBankGeoObject {
     Object body;//对象主题
     String category;//地理对象所属类别，为两级分类，如：/固定地物/楼盘/；固定地物的分类参考高德地图附近中的分类，这些分类均是固定地物
-    Location location;
+    LatLng location;
     long utime;
     public Object getBody() {
         return body;
@@ -26,11 +26,11 @@ public class StorePlusBankGeoObject {
         this.category = category;
     }
 
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 

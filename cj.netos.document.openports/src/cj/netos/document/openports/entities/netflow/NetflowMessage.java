@@ -1,6 +1,6 @@
 package cj.netos.document.openports.entities.netflow;
 
-import cj.netos.document.openports.entities.Location;
+import cj.netos.document.openports.entities.LatLng;
 
 /**
  * 网流消息，仅用于同步存放个人发布的文档，以使它人可看其动态
@@ -8,7 +8,7 @@ import cj.netos.document.openports.entities.Location;
 public class NetflowMessage {
     String id;
     String content;
-    Location location;
+    LatLng location;
     String onchannel;
     String ctime;
     String creator;
@@ -30,11 +30,11 @@ public class NetflowMessage {
         this.content = content;
     }
 
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 

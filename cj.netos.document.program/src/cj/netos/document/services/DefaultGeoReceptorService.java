@@ -7,11 +7,12 @@ import cj.lns.chip.sos.cube.framework.TupleDocument;
 import cj.netos.document.IGeoCategoryService;
 import cj.netos.document.IGeoReceptorService;
 import cj.netos.document.openports.entities.GeoObjectResponse;
-import cj.netos.document.openports.entities.Location;
+import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
+import cj.ultimate.gson2.com.google.gson.Gson;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -55,9 +56,9 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void updateLocation(String category, String id, Location location) {
+    public void updateLocation(String category, String id, LatLng location) {
         Bson filter = Document.parse(String.format("{'tuple.id':'%s'}", id));
-        Bson update = Document.parse(String.format("{'$set':{'tuple.location':'%s'}}", location));
+        Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
         home.updateDocOne(category, filter, update);
     }
 
@@ -84,9 +85,9 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void updateMobileLocation(String person, String device, Location location) {
+    public void updateMobileLocation(String person, String device, LatLng location) {
         Bson filter = Document.parse(String.format("{'tuple.entity.person':'%s','tuple.entity.device':'%s'}", person, device));
-        Bson update = Document.parse(String.format("{'$set':{'tuple.location':'%s'}}", location));
+        Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
         home.updateDocOne("mobiles", filter, update);
     }
 

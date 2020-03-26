@@ -79,17 +79,6 @@ public class DefaultGeoCategoryService extends AbstractService implements IGeoCa
         }
     }
 
-    @Override
-    public void updateCategoryEntity(String id, String entityClass) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s'}", id));
-        Bson update = Document.parse(String.format("{'$set':{'tuple.entityClass':'%s'}}", entityClass));
-        home.updateDocOne(_KEY_CATEGORY_COL, filter, update);
-        GeoCategory category = cache.get(id);
-        if (category != null) {
-            category.setEntityClass(entityClass);
-        }
-    }
-
     void loadCache() {
         String cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {}");
         IQuery<GeoCategory> query = home.createQuery(cjql);

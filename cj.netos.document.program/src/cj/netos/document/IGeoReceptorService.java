@@ -1,8 +1,7 @@
 package cj.netos.document;
 
 import cj.netos.document.openports.entities.GeoObjectResponse;
-import cj.netos.document.openports.entities.Location;
-import cj.netos.document.openports.entities.geo.GeoCategory;
+import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
 
@@ -17,13 +16,13 @@ public interface IGeoReceptorService {
 
     GeoReceptor get(String category, String id);
 
-    void updateLocation(String category, String id, Location location);
+    void updateLocation(String category, String id, LatLng location);
 
     void updateRadius(String category, String id, double radius);
 
     GeoReceptor getMobileGeoReceptor(String person, String device);
 
-    void updateMobileLocation(String person, String device, Location location);
+    void updateMobileLocation(String person, String device, LatLng location);
 
     void updateMobileRadius(String person, String device, double radius);
 

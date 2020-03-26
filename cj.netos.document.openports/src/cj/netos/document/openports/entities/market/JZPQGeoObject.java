@@ -1,13 +1,13 @@
 package cj.netos.document.openports.entities.market;
 
-import cj.netos.document.openports.entities.Location;
+import cj.netos.document.openports.entities.LatLng;
 
 /**
  * 金证喷泉
  */
 public class JZPQGeoObject {
     Object body;//对象主题
-    Location location;
+    LatLng location;
     long utime;
 
     public Object getBody() {
@@ -19,11 +19,11 @@ public class JZPQGeoObject {
     }
 
 
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 
