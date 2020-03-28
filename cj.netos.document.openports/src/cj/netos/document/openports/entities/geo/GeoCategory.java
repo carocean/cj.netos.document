@@ -8,6 +8,7 @@ import cj.ultimate.util.StringUtil;
 public class GeoCategory {
     String id;
     String title;
+    String leading;
     String creator;
     int sort;
     long ctime;
@@ -20,6 +21,14 @@ public class GeoCategory {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getLeading() {
+        return leading;
+    }
+
+    public void setLeading(String leading) {
+        this.leading = leading;
     }
 
     public double getDefaultRadius() {

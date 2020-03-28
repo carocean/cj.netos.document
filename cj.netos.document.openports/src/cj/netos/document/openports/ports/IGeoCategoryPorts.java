@@ -19,6 +19,7 @@ public interface IGeoCategoryPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "标识,指定有语义的", name = "id") String id,
             @CjOpenportParameter(usage = "显示名", name = "title") String title,
+            @CjOpenportParameter(usage = "分类图标", name = "leading") String leading,
             @CjOpenportParameter(usage = "本类感知器的移动能力模式，有:unmoveable|moveableSelf|moveableDependon", name = "moveMode", defaultValue = "unmoveable") GeoCategoryMoveMode moveMode,
             @CjOpenportParameter(usage = "分类下感知器默认的感知半径，单位米", name = "defaultRadius", defaultValue = "500") double defaultRadius,
             @CjOpenportParameter(usage = "分类显示顺序", name = "sort", defaultValue = "0") int sort

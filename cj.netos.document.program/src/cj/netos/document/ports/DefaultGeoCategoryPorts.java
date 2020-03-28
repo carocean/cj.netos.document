@@ -32,7 +32,7 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
     }
 
     @Override
-    public void createCategory(ISecuritySession securitySession, String id, String title,  GeoCategoryMoveMode moveMode, double defaultRadius, int sort) throws CircuitException {
+    public void createCategory(ISecuritySession securitySession, String id, String title,String leading,  GeoCategoryMoveMode moveMode, double defaultRadius, int sort) throws CircuitException {
         _demandDistrictRights(securitySession);
         if (geoCategoryService.exists(id)) {
             throw new CircuitException("500", String.format("已存在分类：%s %s", id, title));
@@ -44,6 +44,7 @@ public class DefaultGeoCategoryPorts implements IGeoCategoryPorts {
         category.setId(id);
         category.setMoveMode(moveMode);
         category.setTitle(title);
+        category.setLeading(leading);
         category.setSort(sort);
         category.setDefaultRadius(defaultRadius < 0 ? 500 : defaultRadius);
         category.setCreator(securitySession.principal());
