@@ -1,5 +1,7 @@
 package cj.netos.document.openports.entities.geo;
 
+import cj.netos.document.openports.entities.BackgroundMode;
+import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.LatLng;
 
 /**
@@ -17,6 +19,9 @@ public class GeoReceptor {
     int uDistance;
     long ctime;
     String device;
+    BackgroundMode backgroundMode;
+    ForegroundMode foregroundMode;
+    String backgroud;
 
     public String getId() {
         return id;
@@ -24,6 +29,30 @@ public class GeoReceptor {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public BackgroundMode getBackgroundMode() {
+        return backgroundMode;
+    }
+
+    public void setBackgroundMode(BackgroundMode backgroundMode) {
+        this.backgroundMode = backgroundMode;
+    }
+
+    public ForegroundMode getForegroundMode() {
+        return foregroundMode;
+    }
+
+    public void setForegroundMode(ForegroundMode foregroundMode) {
+        this.foregroundMode = foregroundMode;
+    }
+
+    public String getBackgroud() {
+        return backgroud;
+    }
+
+    public void setBackgroud(String backgroud) {
+        this.backgroud = backgroud;
     }
 
     public LatLng getLocation() {

@@ -2,11 +2,11 @@ package cj.netos.document.ports;
 
 import cj.netos.document.IGeoCategoryService;
 import cj.netos.document.IGeoReceptorService;
+import cj.netos.document.openports.entities.BackgroundMode;
+import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
-import cj.netos.document.openports.entities.geo.GeoCategory;
-import cj.netos.document.openports.entities.geo.GeoObserver;
-import cj.netos.document.openports.entities.geo.GeoReceptor;
+import cj.netos.document.openports.entities.geo.*;
 import cj.netos.document.openports.ports.IGeoReceptorPorts;
 import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
@@ -105,6 +105,48 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public void updateBackground(ISecuritySession securitySession, String id, String category, BackgroundMode mode, String background) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, id);
+        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
+            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
+            return;
+        }
+        geoReceptorService.updateBackground(securitySession.principal(), category, id, mode, background);
+    }
+
+    @Override
+    public void emptyBackground(ISecuritySession securitySession, String id, String category) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, id);
+        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
+            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
+            return;
+        }
+        geoReceptorService.emptyBackground(securitySession.principal(), id, category);
+    }
+
+    @Override
+    public void updateForeground(ISecuritySession securitySession, String id, String category, ForegroundMode mode) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, id);
+        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
+            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
+            return;
+        }
+        geoReceptorService.updateForeground(securitySession.principal(), id, category, mode);
+    }
+
+    @Override
     public GeoReceptor getMobileGeoReceptor(ISecuritySession securitySession) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get("mobiles");
         if (geoCategory == null) {
@@ -154,5 +196,83 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     @Override
     public List<GeoObserver> pageObserver(ISecuritySession securitySession, String id, String category, long limit, long offset) throws CircuitException {
         return this.geoReceptorService.pageObserver(id, category, limit, offset);
+    }
+
+    @Override
+    public void publishArticle(ISecuritySession securitySession, String category, GeosphereDocument document) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, document.getReceptor());
+        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
+            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", document.getReceptor(), category));
+            return;
+        }
+        this.geoReceptorService.publishArticle(securitySession.principal(), category, document);
+    }
+
+    @Override
+    public void removeArticle(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        this.geoReceptorService.removeArticle(securitySession.principal(), category, receptor,docid);
+    }
+
+    @Override
+    public void like(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        this.geoReceptorService.like(securitySession.principal(),category,receptor,docid);
+    }
+
+    @Override
+    public void unlike(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        this.geoReceptorService.unlike(securitySession.principal(),category,receptor,docid);
+    }
+
+    @Override
+    public void addComment(ISecuritySession securitySession, String category, String receptor, String docid, String commentid, String content) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        this.geoReceptorService.addComment(securitySession.principal(),category,receptor,docid,commentid,content);
+    }
+
+    @Override
+    public void removeComment(ISecuritySession securitySession, String category, String receptor, String docid, String commentid) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        this.geoReceptorService.removeComment(securitySession.principal(),category,receptor,docid,commentid);
+    }
+
+    @Override
+    public void addMedia(ISecuritySession securitySession, String category, String receptor, String docid, String id, String type, String src, String text, String leading) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoDocumentMedia media=new GeoDocumentMedia();
+        media.setCtime(System.currentTimeMillis());
+        media.setDocid(docid);
+        media.setId(id);
+        media.setLeading(leading);
+        media.setReceptor(receptor);
+        media.setSrc(src);
+        media.setText(text);
+        media.setType(type);
+        media.setCreator(securitySession.principal());
+        this.geoReceptorService.addMedia(category,media);
     }
 }

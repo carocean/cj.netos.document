@@ -1,12 +1,16 @@
 package cj.netos.document.openports.ports;
 
+import cj.netos.document.openports.entities.BackgroundMode;
+import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
+import cj.netos.document.openports.entities.geo.GeosphereDocument;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
+import cj.studio.openport.PKeyInRequest;
 import cj.studio.openport.annotations.CjOpenport;
 import cj.studio.openport.annotations.CjOpenportParameter;
 import cj.studio.openport.annotations.CjOpenports;
@@ -50,6 +54,29 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "半径", name = "radius") double radius
     ) throws CircuitException;
 
+    @CjOpenport(usage = "更新背景")
+    void updateBackground(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
+            @CjOpenportParameter(usage = "背景模式。有：vertical,horizontal,none,", name = "mode", defaultValue = "none") BackgroundMode mode,
+            @CjOpenportParameter(usage = "背景文件路径", name = "background") String background
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "清除背景")
+    void emptyBackground(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分类标识", name = "category") String category
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "更新前景色")
+    void updateForeground(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
+            @CjOpenportParameter(usage = "前景模式。有：original,white,", name = "mode", defaultValue = "original") ForegroundMode mode
+    ) throws CircuitException;
 
     @CjOpenport(usage = "更新图标")
     void updateLeading(
@@ -118,6 +145,69 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
             @CjOpenportParameter(usage = "偏移", name = "offset") long offset
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "发布感知器文档", command = "post")
+    void publishArticle(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器文档", name = "document", in = PKeyInRequest.content) GeosphereDocument document
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "删除我的文档")
+    void removeArticle(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "我点赞文档")
+    void like(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "我取消点赞文档")
+    void unlike(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "我评论文档")
+    void addComment(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid,
+            @CjOpenportParameter(usage = "评论标识", name = "commentid") String commentid,
+            @CjOpenportParameter(usage = "评论内容", name = "content") String content
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "删除我的评论")
+    void removeComment(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid,
+            @CjOpenportParameter(usage = "评论标识", name = "commentid") String commentid
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "文档的多媒体附件")
+    void addMedia(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid,
+            @CjOpenportParameter(usage = "多媒体标识", name = "id") String id,
+            @CjOpenportParameter(usage = "多媒体类型", name = "type") String type,
+            @CjOpenportParameter(usage = "多媒体文件路径", name = "src") String src,
+            @CjOpenportParameter(usage = "多媒体内容，如是分享", name = "text") String text,
+            @CjOpenportParameter(usage = "多媒体头图标，如是分享", name = "leading") String leading
     ) throws CircuitException;
 
 }
