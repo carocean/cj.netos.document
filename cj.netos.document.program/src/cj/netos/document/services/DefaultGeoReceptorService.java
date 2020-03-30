@@ -247,12 +247,12 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     //https://blog.csdn.net/varyall/article/details/80308426
-    @Override
-    public List<GeoObjectResponse> recept(String category, long limit, long offset) {
+//    @Override
+//    public List<GeoObjectResponse> recept(String category, long limit, long offset) {
         //$geoNear,设需要以当前坐标为原点，查询附近指定范围内的餐厅，并直接显示距离
 //        这个需求用前面提到的$near是可以实现的，但是距离需要二次计算。这里我们用$geoNear这个命令查询。
 //        $geoNear与$near功能类似，但提供更多功能和返回更多信息，官方文档是这么解释的：
 
-        return null;
-    }
+//        return null;
+//    }
 }

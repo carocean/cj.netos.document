@@ -30,7 +30,7 @@ public interface IGeoReceptorService {
 
     void updateMobileRadius(String person, String device, double radius);
 
-    List<GeoObjectResponse> recept(String category, long limit, long offset);
+//    List<GeoObjectResponse> recept(String category, long limit, long offset);
 
     void addObserver(String id, String category, String observer);
 

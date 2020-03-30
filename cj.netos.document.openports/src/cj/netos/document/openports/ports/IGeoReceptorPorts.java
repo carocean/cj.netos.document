@@ -103,13 +103,13 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "半径", name = "radius") double radius
     ) throws CircuitException;
 
-    @CjOpenport(usage = "按地圈自助感知地物")
-    List<GeoObjectResponse> recept(
-            ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "分类", name = "category") String category,
-            @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
-            @CjOpenportParameter(usage = "偏移", name = "offset") long offset
-    ) throws CircuitException;
+//    @CjOpenport(usage = "按地圈自助感知地物")
+//    List<GeoObjectResponse> recept(
+//            ISecuritySession securitySession,
+//            @CjOpenportParameter(usage = "分类", name = "category") String category,
+//            @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
+//            @CjOpenportParameter(usage = "偏移", name = "offset") long offset
+//    ) throws CircuitException;
 
     /*
     将来借助于高德api中的行政区边界得到行政区的Polygon，然后即可在mongodb中查是否有地物在此边界内，因此只有查询才依赖于高德接口：

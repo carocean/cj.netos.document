@@ -173,15 +173,15 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         }
         geoReceptorService.updateMobileRadius(securitySession.principal(), securitySession.property("device") + "", radius);
     }
-
-    @Override
-    public List<GeoObjectResponse> recept(ISecuritySession securitySession, String category, long limit, long offset) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            return new ArrayList<>();
-        }
-        return geoReceptorService.recept(category, limit, offset);
-    }
+//
+//    @Override
+//    public List<GeoObjectResponse> recept(ISecuritySession securitySession, String category, long limit, long offset) throws CircuitException {
+//        GeoCategory geoCategory = geoCategoryService.get(category);
+//        if (geoCategory == null) {
+//            return new ArrayList<>();
+//        }
+//        return geoReceptorService.recept(category, limit, offset);
+//    }
 
     @Override
     public void addObserver(ISecuritySession securitySession, String id, String category) throws CircuitException {
