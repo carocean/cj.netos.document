@@ -61,4 +61,6 @@ public interface IGeoReceptorService {
 
     void addMedia(String category, GeoDocumentMedia media);
 
+    void createGeoIndex();
+
 }

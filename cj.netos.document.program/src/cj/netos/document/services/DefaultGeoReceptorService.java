@@ -11,14 +11,19 @@ import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.*;
+import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.ultimate.gson2.com.google.gson.Gson;
+import com.mongodb.MongoClient;
+import com.mongodb.client.ListIndexesIterable;
+import com.mongodb.client.model.IndexOptions;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CjService(name = "geoReceptorService")
 public class DefaultGeoReceptorService implements IGeoReceptorService {
@@ -45,6 +50,51 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     String _getMediaColName(String category) {
         return String.format("geo.receptor.%s.medias", category);
+    }
+
+    @Override
+    public void createGeoIndex() {
+        //为感知器和文档创建地理索引
+        GeoCategory[] categories = geoCategoryService.listCategory();
+        for (GeoCategory category : categories) {
+            ListIndexesIterable<Document> itReceptorIndexes = home.listIndexes(_getReceptorColName(category.getId()));
+            boolean hasIndex = false;
+            for (Document doc : itReceptorIndexes) {
+                //是否存在索引，如果不存在则建立
+                Map map = (Map) doc.get("key");
+                Object v = map.get("tuple.location");
+//                System.out.println(doc);
+                if (v!=null) {
+//                    home.dropIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':1}")));
+                    CJSystem.logging().info(getClass(),String.format("发现感知器<%s>的索引：tuple.location=2dsphere",_getReceptorColName(category.getId())));
+                    hasIndex = true;
+                    break;
+                }
+            }
+            if (!hasIndex) {
+                home.createIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':'2dsphere'}")));
+                CJSystem.logging().info(getClass(),String.format("已为感知器<%s>创建索引：tuple.location=2dsphere",_getReceptorColName(category.getId())));
+            }
+            hasIndex=false;
+            ListIndexesIterable<Document> itDocumentIndexes = home.listIndexes(_getDocumentColName(category.getId()));
+            for (Document doc : itDocumentIndexes) {
+                //是否存在索引，如果不存在则建立
+                Map map = (Map) doc.get("key");
+                Object v = map.get("tuple.location");
+//                System.out.println(doc);
+                if (v!=null) {
+//                    home.dropIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':1}")));
+                    CJSystem.logging().info(getClass(),String.format("发现文档<%s>的索引：tuple.location=2dsphere",_getDocumentColName(category.getId())));
+                    hasIndex = true;
+                    break;
+                }
+            }
+            if (!hasIndex) {
+                home.createIndex(_getDocumentColName(category.getId()), Document.parse(String.format("{'tuple.location':'2dsphere'}")));
+                CJSystem.logging().info(getClass(),String.format("已为文档<%s>创建索引：tuple.location=2dsphere",_getDocumentColName(category.getId())));
+            }
+        }
+
     }
 
     @Override
@@ -249,7 +299,7 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     //https://blog.csdn.net/varyall/article/details/80308426
 //    @Override
 //    public List<GeoObjectResponse> recept(String category, long limit, long offset) {
-        //$geoNear,设需要以当前坐标为原点，查询附近指定范围内的餐厅，并直接显示距离
+    //$geoNear,设需要以当前坐标为原点，查询附近指定范围内的餐厅，并直接显示距离
 //        这个需求用前面提到的$near是可以实现的，但是距离需要二次计算。这里我们用$geoNear这个命令查询。
 //        $geoNear与$near功能类似，但提供更多功能和返回更多信息，官方文档是这么解释的：
 
