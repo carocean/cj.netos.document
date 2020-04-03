@@ -63,4 +63,6 @@ public interface IGeoReceptorService {
 
     void createGeoIndex();
 
+    List<GeoReceptor> getAllMyReceptor(String principal, Object device);
+
 }

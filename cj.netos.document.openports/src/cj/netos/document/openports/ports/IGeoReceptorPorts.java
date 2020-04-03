@@ -30,6 +30,10 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "距中心点矩离，单位为米", name = "radius") double radius,
             @CjOpenportParameter(usage = "更新距离仅在mobiles分类下的感知器有用，默认10米", name = "uDistance", defaultValue = "10") int uDistance
     ) throws CircuitException;
+    @CjOpenport(usage = "查询我的所有戌知器")
+    List<GeoReceptor> getAllMyReceptor(
+            ISecuritySession securitySession
+            ) throws CircuitException;
 
     @CjOpenport(usage = "移除地理感知器")
     void removeGeoReceptor(
@@ -96,7 +100,7 @@ public interface IGeoReceptorPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
             @CjOpenportParameter(usage = "分类标识", name = "category") String category
-            ) throws CircuitException;
+    ) throws CircuitException;
 
     @CjOpenport(usage = "更新移动设备感知器位置")
     void updateMobileLocation(

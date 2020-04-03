@@ -49,6 +49,11 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public List<GeoReceptor> getAllMyReceptor(ISecuritySession securitySession) throws CircuitException {
+        return geoReceptorService.getAllMyReceptor(securitySession.principal(),securitySession.property("device"));
+    }
+
+    @Override
     public void removeGeoReceptor(ISecuritySession securitySession, String id, String category) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
