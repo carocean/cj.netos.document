@@ -157,6 +157,16 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public GeoReceptor getGeoReceptor(ISecuritySession securitySession, String id, String category) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, id);
+        return receptor;
+    }
+
+    @Override
     public void updateMobileLocation(ISecuritySession securitySession, LatLng location) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get("mobiles");
         if (geoCategory == null) {
@@ -218,7 +228,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        this.geoReceptorService.removeArticle(securitySession.principal(), category, receptor,docid);
+        this.geoReceptorService.removeArticle(securitySession.principal(), category, receptor, docid);
     }
 
     @Override
@@ -227,7 +237,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        this.geoReceptorService.like(securitySession.principal(),category,receptor,docid);
+        this.geoReceptorService.like(securitySession.principal(), category, receptor, docid);
     }
 
     @Override
@@ -236,7 +246,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        this.geoReceptorService.unlike(securitySession.principal(),category,receptor,docid);
+        this.geoReceptorService.unlike(securitySession.principal(), category, receptor, docid);
     }
 
     @Override
@@ -245,7 +255,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        this.geoReceptorService.addComment(securitySession.principal(),category,receptor,docid,commentid,content);
+        this.geoReceptorService.addComment(securitySession.principal(), category, receptor, docid, commentid, content);
     }
 
     @Override
@@ -254,7 +264,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        this.geoReceptorService.removeComment(securitySession.principal(),category,receptor,docid,commentid);
+        this.geoReceptorService.removeComment(securitySession.principal(), category, receptor, docid, commentid);
     }
 
     @Override
@@ -263,7 +273,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        GeoDocumentMedia media=new GeoDocumentMedia();
+        GeoDocumentMedia media = new GeoDocumentMedia();
         media.setCtime(System.currentTimeMillis());
         media.setDocid(docid);
         media.setId(id);
@@ -273,6 +283,6 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         media.setText(text);
         media.setType(type);
         media.setCreator(securitySession.principal());
-        this.geoReceptorService.addMedia(category,media);
+        this.geoReceptorService.addMedia(category, media);
     }
 }

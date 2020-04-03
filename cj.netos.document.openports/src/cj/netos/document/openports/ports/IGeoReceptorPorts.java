@@ -91,6 +91,13 @@ public interface IGeoReceptorPorts extends IOpenportService {
             ISecuritySession securitySession
     ) throws CircuitException;
 
+    @CjOpenport(usage = "获取设备感知器")
+    GeoReceptor getGeoReceptor(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分类标识", name = "category") String category
+            ) throws CircuitException;
+
     @CjOpenport(usage = "更新移动设备感知器位置")
     void updateMobileLocation(
             ISecuritySession securitySession,
