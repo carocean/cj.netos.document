@@ -65,4 +65,6 @@ public interface IGeoReceptorService {
 
     List<GeoReceptor> getAllMyReceptor(String principal, Object device);
 
+    List<GeosphereDocument> pageDocument(String id, String category, String creator, long limit, long skip);
+
 }

@@ -68,6 +68,20 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public List<GeosphereDocument> pageDocument(ISecuritySession securitySession, String id, String category, String creator, long limit, long skip) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        GeoReceptor receptor = geoReceptorService.get(category, id);
+        if (receptor == null) {
+            throw new CircuitException("500", String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
+        }
+
+        return geoReceptorService.pageDocument(id,category,creator,limit,skip);
+    }
+
+    @Override
     public void updateLocation(ISecuritySession securitySession, String id, String category, LatLng location) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {

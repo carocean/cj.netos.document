@@ -21,7 +21,7 @@ public class GeoReceptor {
     String device;
     BackgroundMode backgroundMode;
     ForegroundMode foregroundMode;
-    String backgroud;
+    String background;
 
     public String getId() {
         return id;
@@ -47,12 +47,12 @@ public class GeoReceptor {
         this.foregroundMode = foregroundMode;
     }
 
-    public String getBackgroud() {
-        return backgroud;
+    public String getBackground() {
+        return background;
     }
 
-    public void setBackgroud(String backgroud) {
-        this.backgroud = backgroud;
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public LatLng getLocation() {
