@@ -31,6 +31,9 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "更新距离仅在mobiles分类下的感知器有用，默认10米", name = "uDistance", defaultValue = "10") int uDistance
     ) throws CircuitException;
 
+    @CjOpenport(usage = "重建空间索引")
+    void geoReindex(ISecuritySession securitySession) throws CircuitException;
+
     @CjOpenport(usage = "查询我的所有戌知器")
     List<GeoReceptor> getAllMyReceptor(
             ISecuritySession securitySession

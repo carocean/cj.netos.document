@@ -49,8 +49,16 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public void geoReindex(ISecuritySession securitySession) throws CircuitException {
+        if (!securitySession.roleIn("platform:administrators") && !securitySession.roleIn("tenant:administrators") && !securitySession.roleIn("app:administrators")) {
+            throw new CircuitException("801", String.format("无权执行"));
+        }
+        geoReceptorService.createGeoIndex();
+    }
+
+    @Override
     public List<GeoReceptor> getAllMyReceptor(ISecuritySession securitySession) throws CircuitException {
-        return geoReceptorService.getAllMyReceptor(securitySession.principal(),securitySession.property("device"));
+        return geoReceptorService.getAllMyReceptor(securitySession.principal(), securitySession.property("device"));
     }
 
     @Override
@@ -78,7 +86,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
             throw new CircuitException("500", String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
         }
 
-        return geoReceptorService.pageDocument(id,category,creator,limit,skip);
+        return geoReceptorService.pageDocument(id, category, creator, limit, skip);
     }
 
     @Override
