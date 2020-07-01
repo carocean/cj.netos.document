@@ -242,7 +242,7 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
         GeoReceptor receptor = geoReceptorService.get(category, document.getReceptor());
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
+        if (receptor == null) {
             CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", document.getReceptor(), category));
             return;
         }
