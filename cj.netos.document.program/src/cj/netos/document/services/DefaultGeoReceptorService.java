@@ -298,6 +298,41 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
         _emptyArticleExtra(category, receptor, docid);
     }
 
+    @Override
+    public GeosphereDocument getGeoDocument( String category, String receptor, String docid) {
+        String colname = _getDocumentColName(category);
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'%s','tuple.receptor':'%s'}}",
+                colname,
+                GeosphereDocument.class.getName(),
+                docid,
+                receptor
+        );
+        IQuery<GeosphereDocument> query = home.createQuery(cjql);
+        IDocument<GeosphereDocument> documentIDocument = query.getSingleResult();
+        if (documentIDocument == null) {
+            return null;
+        }
+        return documentIDocument.tuple();
+    }
+
+    @Override
+    public List<GeosphereDocument> findGeoDocuments(String receptor, String category, List<String> docids) {
+        String colname = _getDocumentColName(category);
+        String cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.receptor':'%s','tuple.id':{'$in':%s}}}",
+                colname,
+                GeosphereDocument.class.getName(),
+                receptor,
+                new Gson().toJson(docids)
+        );
+        IQuery<GeosphereDocument> query = home.createQuery(cjql);
+        List<IDocument<GeosphereDocument>> docs = query.getResultList();
+        List<GeosphereDocument> list = new ArrayList<>();
+        for (IDocument<GeosphereDocument> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
     //清空互动，点赞、评论、多媒体
     private void _emptyArticleExtra(String category, String receptor, String docid) {
         String colname = _getLikeColName(category);

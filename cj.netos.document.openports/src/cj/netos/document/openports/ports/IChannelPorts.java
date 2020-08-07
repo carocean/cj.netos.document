@@ -21,6 +21,24 @@ public interface IChannelPorts extends IOpenportService {
                     ChannelDocument document
     ) throws CircuitException;
 
+    @CjOpenport(usage = "按标识集合查文")
+    List<ChannelDocument> findDocuments(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator,
+            @CjOpenportParameter(usage = "文档标识集合", name = "docids")
+                    List<String> docids
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "获取文章")
+    ChannelDocument getDocument(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator,
+            @CjOpenportParameter(usage = "文档标识", name = "docid")
+                    String docid
+    ) throws CircuitException;
+
     @CjOpenport(usage = "移除文章")
     void removeDocument(
             ISecuritySession securitySession,

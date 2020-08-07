@@ -6,9 +6,11 @@ import cj.lns.chip.sos.cube.framework.IQuery;
 import cj.lns.chip.sos.cube.framework.TupleDocument;
 import cj.netos.document.AbstractService;
 import cj.netos.document.IChannelService;
+import cj.netos.document.openports.entities.geo.GeosphereDocument;
 import cj.netos.document.openports.entities.netflow.*;
 import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
+import cj.ultimate.gson2.com.google.gson.Gson;
 import cj.ultimate.util.StringUtil;
 
 import java.math.BigDecimal;
@@ -29,6 +31,37 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
         document.setCtime(System.currentTimeMillis());
         ICube cube = cube(document.getCreator());
         cube.saveDoc("network.channel.documents", new TupleDocument<>(document));
+    }
+
+    @Override
+    public List<ChannelDocument> findDocuments(String creator, List<String> docids) {
+        ICube cube = cube(creator);
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents ?(clazz) where {'tuple.id':{'$in':%s}}}",
+                ChannelDocument.class.getName(),
+                new Gson().toJson(docids)
+        );
+        IQuery<ChannelDocument> query = cube.createQuery(cjql);
+        List<IDocument<ChannelDocument>> docs = query.getResultList();
+        List<ChannelDocument> list = new ArrayList<>();
+        for (IDocument<ChannelDocument> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
+    @Override
+    public ChannelDocument getDocument(String creator, String docid) {
+        ICube cube = cube(creator);
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents ?(clazz) where {'tuple.id':'%s'}}",
+                ChannelDocument.class.getName(),
+                docid
+        );
+        IQuery<ChannelDocument> query = cube.createQuery(cjql);
+        IDocument<ChannelDocument> document = query.getSingleResult();
+        if (document == null) {
+            return null;
+        }
+        return document.tuple();
     }
 
     @Override
@@ -158,7 +191,7 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
     @Override
     public List<DocumentMedia> listExtraMedia(String creator, String channel, String docid) {
         ICube cube = cube(creator);
-        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents.medias %s where {'tuple.docid':'%s'}",  DocumentMedia.class.getName(), docid);
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents.medias %s where {'tuple.docid':'%s'}", DocumentMedia.class.getName(), docid);
         IQuery<DocumentMedia> query = cube.createQuery(cjql);
         List<IDocument<DocumentMedia>> docs = query.getResultList();
         List<DocumentMedia> medias = new ArrayList<>();

@@ -49,6 +49,14 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "记录偏移", name = "skip") long skip
     ) throws CircuitException;
 
+    @CjOpenport(usage = "获取文档")
+    List<GeosphereDocument> findGeoDocuments(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id集合", name = "docids") List<String> docids
+    ) throws CircuitException;
+
     @CjOpenport(usage = "移除地理感知器")
     void removeGeoReceptor(
             ISecuritySession securitySession,
@@ -181,6 +189,14 @@ public interface IGeoReceptorPorts extends IOpenportService {
 
     @CjOpenport(usage = "删除我的文档")
     void removeArticle(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "消息id", name = "docid") String docid
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "获取我的文档")
+    GeosphereDocument getGeoDocument(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,

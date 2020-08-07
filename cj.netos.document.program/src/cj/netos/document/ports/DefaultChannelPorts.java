@@ -22,6 +22,16 @@ public class DefaultChannelPorts implements IChannelPorts {
     }
 
     @Override
+    public List<ChannelDocument> findDocuments(ISecuritySession securitySession, String person, List<String> docids) throws CircuitException {
+        return channelService.findDocuments(person,docids);
+    }
+
+    @Override
+    public ChannelDocument getDocument(ISecuritySession securitySession, String creator, String docid) throws CircuitException {
+        return channelService.getDocument(creator,docid);
+    }
+
+    @Override
     public void removeDocument(ISecuritySession securitySession, String docid) throws CircuitException {
         channelService.removeDocument(securitySession.principal(), docid);
     }

@@ -90,6 +90,20 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, String category, String receptor, List<String> docids) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器分类:%s", category));
+        }
+        GeoReceptor receptorObj = geoReceptorService.get(category, receptor);
+        if (receptorObj == null) {
+            throw new CircuitException("500", String.format("不存在感知器:%s, 在分类:%s，因此被忽略", receptor, category));
+        }
+
+        return geoReceptorService.findGeoDocuments(receptor, category, docids);
+    }
+
+    @Override
     public void updateLocation(ISecuritySession securitySession, String id, String category, LatLng location) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
@@ -256,6 +270,15 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
         this.geoReceptorService.removeArticle(securitySession.principal(), category, receptor, docid);
+    }
+
+    @Override
+    public GeosphereDocument getGeoDocument(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        return this.geoReceptorService.getGeoDocument( category, receptor, docid);
     }
 
     @Override

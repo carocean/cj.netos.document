@@ -34,4 +34,8 @@ public interface IChannelService {
 
     List<DocumentMedia> listExtraMedia(String creator, String channel, String docid);
 
+    List<ChannelDocument> findDocuments(String person, List<String> docids);
+
+    ChannelDocument getDocument(String creator, String docid);
+
 }
