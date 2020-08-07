@@ -301,7 +301,7 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     @Override
     public GeosphereDocument getGeoDocument( String category, String docid) {
         String colname = _getDocumentColName(category);
-        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'%s'}}",
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple %s %s where {'tuple.id':'%s'}",
                 colname,
                 GeosphereDocument.class.getName(),
                 docid
@@ -317,7 +317,7 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     @Override
     public List<GeosphereDocument> findGeoDocuments(String category, List<String> docids) {
         String colname = _getDocumentColName(category);
-        String cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.id':{'$in':%s}}}",
+        String cjql = String.format("select {'tuple':'*'} from tuple %s %s where {'tuple.id':{'$in':%s}}",
                 colname,
                 GeosphereDocument.class.getName(),
                 new Gson().toJson(docids)

@@ -36,7 +36,7 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
     @Override
     public List<ChannelDocument> findDocuments(String creator, List<String> docids) {
         ICube cube = cube(creator);
-        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents ?(clazz) where {'tuple.id':{'$in':%s}}}",
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents %s where {'tuple.id':{'$in':%s}}",
                 ChannelDocument.class.getName(),
                 new Gson().toJson(docids)
         );
@@ -52,7 +52,7 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
     @Override
     public ChannelDocument getDocument(String creator, String docid) {
         ICube cube = cube(creator);
-        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents ?(clazz) where {'tuple.id':'%s'}}",
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents %s where {'tuple.id':'%s'}",
                 ChannelDocument.class.getName(),
                 docid
         );
