@@ -90,13 +90,13 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, String category,  List<String> docids) throws CircuitException {
+    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, String category, List<String> docids) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器分类:%s", category));
         }
 
-        return geoReceptorService.findGeoDocuments( category, docids);
+        return geoReceptorService.findGeoDocuments(category, docids);
     }
 
     @Override
@@ -272,9 +272,9 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     public GeosphereDocument getGeoDocument(ISecuritySession securitySession, String category, String docid) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+            throw new CircuitException("500", String.format("不存在地理感知器分类:%s", category));
         }
-        return this.geoReceptorService.getGeoDocument( category,  docid);
+        return this.geoReceptorService.getGeoDocument(category, docid);
     }
 
     @Override
