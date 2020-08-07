@@ -90,17 +90,13 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, String category, String receptor, List<String> docids) throws CircuitException {
+    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, String category,  List<String> docids) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器分类:%s", category));
         }
-        GeoReceptor receptorObj = geoReceptorService.get(category, receptor);
-        if (receptorObj == null) {
-            throw new CircuitException("500", String.format("不存在感知器:%s, 在分类:%s，因此被忽略", receptor, category));
-        }
 
-        return geoReceptorService.findGeoDocuments(receptor, category, docids);
+        return geoReceptorService.findGeoDocuments( category, docids);
     }
 
     @Override
@@ -273,12 +269,12 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public GeosphereDocument getGeoDocument(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
+    public GeosphereDocument getGeoDocument(ISecuritySession securitySession, String category, String docid) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        return this.geoReceptorService.getGeoDocument( category, receptor, docid);
+        return this.geoReceptorService.getGeoDocument( category,  docid);
     }
 
     @Override

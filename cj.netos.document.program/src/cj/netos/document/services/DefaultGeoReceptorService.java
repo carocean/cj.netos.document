@@ -299,13 +299,12 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public GeosphereDocument getGeoDocument( String category, String receptor, String docid) {
+    public GeosphereDocument getGeoDocument( String category, String docid) {
         String colname = _getDocumentColName(category);
-        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'%s','tuple.receptor':'%s'}}",
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'%s'}}",
                 colname,
                 GeosphereDocument.class.getName(),
-                docid,
-                receptor
+                docid
         );
         IQuery<GeosphereDocument> query = home.createQuery(cjql);
         IDocument<GeosphereDocument> documentIDocument = query.getSingleResult();
@@ -316,12 +315,11 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public List<GeosphereDocument> findGeoDocuments(String receptor, String category, List<String> docids) {
+    public List<GeosphereDocument> findGeoDocuments(String category, List<String> docids) {
         String colname = _getDocumentColName(category);
-        String cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.receptor':'%s','tuple.id':{'$in':%s}}}",
+        String cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.id':{'$in':%s}}}",
                 colname,
                 GeosphereDocument.class.getName(),
-                receptor,
                 new Gson().toJson(docids)
         );
         IQuery<GeosphereDocument> query = home.createQuery(cjql);

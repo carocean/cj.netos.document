@@ -67,8 +67,8 @@ public interface IGeoReceptorService {
 
     List<GeosphereDocument> pageDocument(String id, String category, String creator, long limit, long skip);
 
-    GeosphereDocument getGeoDocument(String category, String receptor, String docid);
+    GeosphereDocument getGeoDocument(String category, String docid);
 
-    List<GeosphereDocument> findGeoDocuments(String receptor, String category, List<String> docids);
+    List<GeosphereDocument> findGeoDocuments(String category, List<String> docids);
 
 }

@@ -53,7 +53,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     List<GeosphereDocument> findGeoDocuments(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "所属分类", name = "category") String category,
-            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id集合", name = "docids") List<String> docids
     ) throws CircuitException;
 
@@ -199,7 +198,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     GeosphereDocument getGeoDocument(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "所属分类", name = "category") String category,
-            @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid
     ) throws CircuitException;
 
