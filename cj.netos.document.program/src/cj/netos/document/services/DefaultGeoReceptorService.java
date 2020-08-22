@@ -334,10 +334,10 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     @Override
     public List<GeosphereMedia> listExtraMedia(String category, String docid) {
-        String colname = _getDocumentColName(category);
+        String colname = _getMediaColName(category);
         String cjql = String.format("select {'tuple':'*'} from tuple %s %s where {'tuple.docid':'%s'}",
                 colname,
-                GeosphereDocument.class.getName(),
+                GeosphereMedia.class.getName(),
                 docid
         );
         IQuery<GeosphereMedia> query = home.createQuery(cjql);
