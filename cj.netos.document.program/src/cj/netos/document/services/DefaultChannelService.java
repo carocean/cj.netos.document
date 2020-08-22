@@ -6,7 +6,6 @@ import cj.lns.chip.sos.cube.framework.IQuery;
 import cj.lns.chip.sos.cube.framework.TupleDocument;
 import cj.netos.document.AbstractService;
 import cj.netos.document.IChannelService;
-import cj.netos.document.openports.entities.geo.GeosphereDocument;
 import cj.netos.document.openports.entities.netflow.*;
 import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
@@ -71,7 +70,7 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
     }
 
     @Override
-    public void addDocumentMedia(String creator, DocumentMedia media) {
+    public void addDocumentMedia(String creator, ChannelMedia media) {
         ICube cube = cube(creator);
         media.setCtime(System.currentTimeMillis());
         cube.saveDoc("network.channel.documents.medias", new TupleDocument<>(media));
@@ -189,13 +188,13 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
     }
 
     @Override
-    public List<DocumentMedia> listExtraMedia(String creator, String channel, String docid) {
+    public List<ChannelMedia> listExtraMedia(String creator, String channel, String docid) {
         ICube cube = cube(creator);
-        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents.medias %s where {'tuple.docid':'%s'}", DocumentMedia.class.getName(), docid);
-        IQuery<DocumentMedia> query = cube.createQuery(cjql);
-        List<IDocument<DocumentMedia>> docs = query.getResultList();
-        List<DocumentMedia> medias = new ArrayList<>();
-        for (IDocument<DocumentMedia> doc : docs) {
+        String cjql = String.format("select {'tuple':'*'} from tuple network.channel.documents.medias %s where {'tuple.docid':'%s'}", ChannelMedia.class.getName(), docid);
+        IQuery<ChannelMedia> query = cube.createQuery(cjql);
+        List<IDocument<ChannelMedia>> docs = query.getResultList();
+        List<ChannelMedia> medias = new ArrayList<>();
+        for (IDocument<ChannelMedia> doc : docs) {
             medias.add(doc.tuple());
         }
         return medias;

@@ -11,6 +11,7 @@ import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.*;
+import cj.netos.document.openports.entities.netflow.GeosphereMedia;
 import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
@@ -299,7 +300,7 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public GeosphereDocument getGeoDocument( String category, String docid) {
+    public GeosphereDocument getGeoDocument(String category, String docid) {
         String colname = _getDocumentColName(category);
         String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple %s %s where {'tuple.id':'%s'}",
                 colname,
@@ -326,6 +327,23 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
         List<IDocument<GeosphereDocument>> docs = query.getResultList();
         List<GeosphereDocument> list = new ArrayList<>();
         for (IDocument<GeosphereDocument> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
+    @Override
+    public List<GeosphereMedia> listExtraMedia(String category, String docid) {
+        String colname = _getDocumentColName(category);
+        String cjql = String.format("select {'tuple':'*'} from tuple %s %s where {'tuple.docid':'%s'}",
+                colname,
+                GeosphereDocument.class.getName(),
+                docid
+        );
+        IQuery<GeosphereMedia> query = home.createQuery(cjql);
+        List<IDocument<GeosphereMedia>> docs = query.getResultList();
+        List<GeosphereMedia> list = new ArrayList<>();
+        for (IDocument<GeosphereMedia> doc : docs) {
             list.add(doc.tuple());
         }
         return list;

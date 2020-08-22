@@ -18,7 +18,7 @@ public interface IChannelService {
 
     void uncommentDocument(String commenter, String docid, String channel, String creator, String commentid);
 
-    void addDocumentMedia(String principal, DocumentMedia media);
+    void addDocumentMedia(String principal, ChannelMedia media);
 
     void emptyDocumentMedia(String principal, String docid);
 
@@ -32,7 +32,7 @@ public interface IChannelService {
 
     List<DocumentActivity> pageExtraActivity(String creator, String channel, String docid, int limit, int offset);
 
-    List<DocumentMedia> listExtraMedia(String creator, String channel, String docid);
+    List<ChannelMedia> listExtraMedia(String creator, String channel, String docid);
 
     List<ChannelDocument> findDocuments(String person, List<String> docids);
 

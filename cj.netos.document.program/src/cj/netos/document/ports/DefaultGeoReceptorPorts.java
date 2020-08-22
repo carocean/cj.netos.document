@@ -4,18 +4,17 @@ import cj.netos.document.IGeoCategoryService;
 import cj.netos.document.IGeoReceptorService;
 import cj.netos.document.openports.entities.BackgroundMode;
 import cj.netos.document.openports.entities.ForegroundMode;
-import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.*;
+import cj.netos.document.openports.entities.netflow.ChannelMedia;
+import cj.netos.document.openports.entities.netflow.GeosphereMedia;
 import cj.netos.document.openports.ports.IGeoReceptorPorts;
 import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.ISecuritySession;
-import cj.ultimate.gson2.com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CjService(name = "/geo/receptor.service")
@@ -330,5 +329,14 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         media.setType(type);
         media.setCreator(securitySession.principal());
         this.geoReceptorService.addMedia(category, media);
+    }
+
+    @Override
+    public List<GeosphereMedia> listExtraMedia(ISecuritySession securitySession, String category, String docid) throws CircuitException {
+        GeoCategory geoCategory = geoCategoryService.get(category);
+        if (geoCategory == null) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+        }
+        return geoReceptorService.listExtraMedia(category, docid);
     }
 }

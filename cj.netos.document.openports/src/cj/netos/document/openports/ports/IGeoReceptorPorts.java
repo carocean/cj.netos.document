@@ -2,11 +2,12 @@ package cj.netos.document.openports.ports;
 
 import cj.netos.document.openports.entities.BackgroundMode;
 import cj.netos.document.openports.entities.ForegroundMode;
-import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
 import cj.netos.document.openports.entities.geo.GeosphereDocument;
+import cj.netos.document.openports.entities.netflow.ChannelMedia;
+import cj.netos.document.openports.entities.netflow.GeosphereMedia;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
@@ -247,6 +248,15 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "多媒体文件路径", name = "src") String src,
             @CjOpenportParameter(usage = "多媒体内容，如是分享", name = "text") String text,
             @CjOpenportParameter(usage = "多媒体头图标，如是分享", name = "leading") String leading
+    ) throws CircuitException;
+
+
+    @CjOpenport(usage = "列出多媒体附件")
+    List<GeosphereMedia> listExtraMedia(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "文档标识", name = "docid")
+                    String docid
     ) throws CircuitException;
 
 }

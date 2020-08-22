@@ -8,6 +8,7 @@ import cj.netos.document.openports.entities.geo.GeoDocumentMedia;
 import cj.netos.document.openports.entities.geo.GeoObserver;
 import cj.netos.document.openports.entities.geo.GeoReceptor;
 import cj.netos.document.openports.entities.geo.GeosphereDocument;
+import cj.netos.document.openports.entities.netflow.GeosphereMedia;
 
 import java.util.List;
 
@@ -70,5 +71,7 @@ public interface IGeoReceptorService {
     GeosphereDocument getGeoDocument(String category, String docid);
 
     List<GeosphereDocument> findGeoDocuments(String category, List<String> docids);
+
+    List<GeosphereMedia> listExtraMedia(String category, String docid);
 
 }

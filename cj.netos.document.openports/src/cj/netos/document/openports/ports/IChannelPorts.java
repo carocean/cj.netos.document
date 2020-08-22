@@ -50,7 +50,7 @@ public interface IChannelPorts extends IOpenportService {
     void addDocumentMedia(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "多媒体信息", in = PKeyInRequest.content, name = "media")
-                    DocumentMedia media
+                    ChannelMedia media
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除文章多媒体附件")
@@ -182,7 +182,7 @@ public interface IChannelPorts extends IOpenportService {
     ) throws CircuitException;
 
     @CjOpenport(usage = "列出多媒体附件")
-    List<DocumentMedia> listExtraMedia(
+    List<ChannelMedia> listExtraMedia(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
                     String docid,

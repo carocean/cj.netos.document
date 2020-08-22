@@ -1,13 +1,13 @@
 package cj.netos.document.openports.entities.netflow;
 
-public class DocumentMedia {
+public class GeosphereMedia {
     String id;
     String docid;
     String type;
     String src;
     String text;
     String leading;
-    String channel;
+    String receptor;
     long ctime;
 
     public String getId() {
@@ -18,12 +18,12 @@ public class DocumentMedia {
         this.id = id;
     }
 
-    public String getChannel() {
-        return channel;
+    public String getReceptor() {
+        return receptor;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setReceptor(String receptor) {
+        this.receptor = receptor;
     }
 
     public String getDocid() {
