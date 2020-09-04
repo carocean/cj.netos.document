@@ -9,7 +9,7 @@ public class ChannelDocument {
     String content;
     LatLng location;
     long ctime;
-    String tradeSn;
+    String purchaseSn;
 
     public String getId() {
         return id;
@@ -59,7 +59,7 @@ public class ChannelDocument {
         this.ctime = ctime;
     }
 
-    public ChannelDocument(String tradeSn) {
-        this.tradeSn = tradeSn;
+    public ChannelDocument(String purchaseSn) {
+        this.purchaseSn = purchaseSn;
     }
 }
