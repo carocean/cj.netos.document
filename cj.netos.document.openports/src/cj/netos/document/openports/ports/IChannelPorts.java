@@ -39,6 +39,19 @@ public interface IChannelPorts extends IOpenportService {
                     String docid
     ) throws CircuitException;
 
+    @CjOpenport(usage = "分页获取公众开放的文章", elementType = ChannelDocument.class)
+    List<ChannelDocument> pageDocument(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "文档创建者", name = "creator")
+                    String creator,
+            @CjOpenportParameter(usage = "管道标识", name = "channel")
+                    String channel,
+            @CjOpenportParameter(usage = "页大小", name = "limit")
+                    int limit,
+            @CjOpenportParameter(usage = "页码", name = "offset")
+                    long offset
+    ) throws CircuitException;
+
     @CjOpenport(usage = "移除文章")
     void removeDocument(
             ISecuritySession securitySession,

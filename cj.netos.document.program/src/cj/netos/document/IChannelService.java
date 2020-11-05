@@ -38,4 +38,6 @@ public interface IChannelService {
 
     ChannelDocument getDocument(String creator, String docid);
 
+    List<ChannelDocument> pageDocument(String creator, String channel, int limit, long offset);
+
 }

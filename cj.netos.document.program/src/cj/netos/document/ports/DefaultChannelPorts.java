@@ -32,6 +32,11 @@ public class DefaultChannelPorts implements IChannelPorts {
     }
 
     @Override
+    public List<ChannelDocument> pageDocument(ISecuritySession securitySession, String creator, String channel, int limit, long offset) throws CircuitException {
+        return channelService.pageDocument(creator,channel,limit,offset);
+    }
+
+    @Override
     public void removeDocument(ISecuritySession securitySession, String docid) throws CircuitException {
         channelService.removeDocument(securitySession.principal(), docid);
     }

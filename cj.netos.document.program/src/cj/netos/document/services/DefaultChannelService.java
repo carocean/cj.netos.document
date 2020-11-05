@@ -64,6 +64,24 @@ public class DefaultChannelService extends AbstractService implements IChannelSe
     }
 
     @Override
+    public List<ChannelDocument> pageDocument(String creator, String channel, int limit, long offset) {
+        ICube cube = cube(creator);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s).sort({'tuple.ctime':-1}) from tuple network.channel.documents %s where {'tuple.channel':'%s'}",
+                limit,
+                offset,
+                ChannelDocument.class.getName(),
+                channel
+        );
+        IQuery<ChannelDocument> query = cube.createQuery(cjql);
+        List<IDocument<ChannelDocument>> docs = query.getResultList();
+        List<ChannelDocument> list = new ArrayList<>();
+        for (IDocument<ChannelDocument> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
+    @Override
     public void removeDocument(String creator, String docid) {
         ICube cube = cube(creator);
         cube.deleteDocOne("network.channel.documents", String.format("{'tuple.id':'%s'}", docid));
