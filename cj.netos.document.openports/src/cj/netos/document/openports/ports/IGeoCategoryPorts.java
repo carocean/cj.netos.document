@@ -3,9 +3,12 @@ package cj.netos.document.openports.ports;
 import cj.netos.document.openports.entities.GeoCategoryMoveMode;
 import cj.netos.document.openports.entities.geo.GeoCategory;
 import cj.netos.document.openports.entities.geo.GeoCategoryApp;
+import cj.netos.document.openports.entities.result.GeoChannelPortal;
+import cj.netos.document.openports.entities.result.GeoChannelResult;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
+import cj.studio.openport.PKeyInRequest;
 import cj.studio.openport.annotations.CjOpenport;
 import cj.studio.openport.annotations.CjOpenportParameter;
 import cj.studio.openport.annotations.CjOpenports;
@@ -78,5 +81,16 @@ public interface IGeoCategoryPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "指定分类应用在哪端，客端应用或是服端应用，onserved|onservice", name = "on") String on,
             @CjOpenportParameter(usage = "分类标识,指定有语义的", name = "category") String category
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "配置分类，可以多次调用，增量更新", command = "post")
+    GeoChannelPortal config(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "配置信息", name = "info", simpleModelFile = "/channels.md", in = PKeyInRequest.content) String info
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "获取频道门户")
+    GeoChannelPortal getGeoPortal(
+            ISecuritySession securitySession
     ) throws CircuitException;
 }

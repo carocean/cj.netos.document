@@ -2,6 +2,7 @@ package cj.netos.document.openports.entities.geo;
 
 import cj.netos.document.openports.entities.BackgroundMode;
 import cj.netos.document.openports.entities.ForegroundMode;
+import cj.netos.document.openports.entities.GeoCategoryMoveMode;
 import cj.netos.document.openports.entities.LatLng;
 
 /**
@@ -11,6 +12,8 @@ public class GeoReceptor {
     String id;
     String title;
     String category;
+    String channel;
+    String brand;
     String leading;
     String creator;
     LatLng location;
@@ -19,6 +22,7 @@ public class GeoReceptor {
     int uDistance;
     long ctime;
     String device;
+    GeoCategoryMoveMode moveMode;
     BackgroundMode backgroundMode;
     ForegroundMode foregroundMode;
     String background;
@@ -29,6 +33,30 @@ public class GeoReceptor {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public GeoCategoryMoveMode getMoveMode() {
+        return moveMode;
+    }
+
+    public void setMoveMode(GeoCategoryMoveMode moveMode) {
+        this.moveMode = moveMode;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public BackgroundMode getBackgroundMode() {

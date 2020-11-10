@@ -8,7 +8,6 @@ import cj.netos.document.IGeoCategoryService;
 import cj.netos.document.IGeoReceptorService;
 import cj.netos.document.openports.entities.BackgroundMode;
 import cj.netos.document.openports.entities.ForegroundMode;
-import cj.netos.document.openports.entities.GeoObjectResponse;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.*;
 import cj.netos.document.openports.entities.netflow.GeosphereMedia;
@@ -16,9 +15,7 @@ import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.ultimate.gson2.com.google.gson.Gson;
-import com.mongodb.MongoClient;
 import com.mongodb.client.ListIndexesIterable;
-import com.mongodb.client.model.IndexOptions;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -33,91 +30,101 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     @CjServiceRef
     IGeoCategoryService geoCategoryService;
 
-    String _getReceptorColName(String category) {
-        return String.format("geo.receptor.%s", category);
+    String _getReceptorColName() {
+        return String.format("geo.receptors");
     }
 
-    String _getDocumentColName(String category) {
-        return String.format("geo.receptor.%s.docs", category);
+    String _getDocumentColName() {
+        return String.format("geo.receptor.docs");
     }
 
-    String _getLikeColName(String category) {
-        return String.format("geo.receptor.%s.likes", category);
+    String _getLikeColName() {
+        return String.format("geo.receptor.likes");
     }
 
-    String _getCommentColName(String category) {
-        return String.format("geo.receptor.%s.comments", category);
+    String _getCommentColName() {
+        return String.format("geo.receptor.comments");
     }
 
-    String _getMediaColName(String category) {
-        return String.format("geo.receptor.%s.medias", category);
+    String _getFollowColName() {
+        return String.format("geo.receptor.follows");
+    }
+
+    String _getMediaColName() {
+        return String.format("geo.receptor.medias");
     }
 
     @Override
     public void createGeoIndex() {
         //为感知器和文档创建地理索引
-        GeoCategory[] categories = geoCategoryService.listCategory();
-        for (GeoCategory category : categories) {
-            ListIndexesIterable<Document> itReceptorIndexes = home.listIndexes(_getReceptorColName(category.getId()));
-            boolean hasIndex = false;
-            for (Document doc : itReceptorIndexes) {
-                //是否存在索引，如果不存在则建立
-                Map map = (Map) doc.get("key");
-                Object v = map.get("tuple.location");
+        ListIndexesIterable<Document> itReceptorIndexes = home.listIndexes(_getReceptorColName());
+        boolean hasIndex = false;
+        for (Document doc : itReceptorIndexes) {
+            //是否存在索引，如果不存在则建立
+            Map map = (Map) doc.get("key");
+            Object v = map.get("tuple.location");
 //                System.out.println(doc);
-                if (v != null) {
+            if (v != null) {
 //                    home.dropIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':1}")));
-                    CJSystem.logging().info(getClass(), String.format("发现感知器<%s>的索引：tuple.location=2dsphere", _getReceptorColName(category.getId())));
-                    hasIndex = true;
-                    break;
-                }
-            }
-            if (!hasIndex) {
-                home.createIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':'2dsphere'}")));
-                CJSystem.logging().info(getClass(), String.format("已为感知器<%s>创建索引：tuple.location=2dsphere", _getReceptorColName(category.getId())));
-            }
-            hasIndex = false;
-            ListIndexesIterable<Document> itDocumentIndexes = home.listIndexes(_getDocumentColName(category.getId()));
-            for (Document doc : itDocumentIndexes) {
-                //是否存在索引，如果不存在则建立
-                Map map = (Map) doc.get("key");
-                Object v = map.get("tuple.location");
-//                System.out.println(doc);
-                if (v != null) {
-//                    home.dropIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':1}")));
-                    CJSystem.logging().info(getClass(), String.format("发现文档<%s>的索引：tuple.location=2dsphere", _getDocumentColName(category.getId())));
-                    hasIndex = true;
-                    break;
-                }
-            }
-            if (!hasIndex) {
-                home.createIndex(_getDocumentColName(category.getId()), Document.parse(String.format("{'tuple.location':'2dsphere'}")));
-                CJSystem.logging().info(getClass(), String.format("已为文档<%s>创建索引：tuple.location=2dsphere", _getDocumentColName(category.getId())));
+                CJSystem.logging().info(getClass(), String.format("发现感知器<%s>的索引：tuple.location=2dsphere", _getReceptorColName()));
+                hasIndex = true;
+                break;
             }
         }
-
+        if (!hasIndex) {
+            home.createIndex(_getReceptorColName(), Document.parse(String.format("{'tuple.location':'2dsphere'}")));
+            CJSystem.logging().info(getClass(), String.format("已为感知器<%s>创建索引：tuple.location=2dsphere", _getReceptorColName()));
+        }
+        hasIndex = false;
+        ListIndexesIterable<Document> itDocumentIndexes = home.listIndexes(_getDocumentColName());
+        for (Document doc : itDocumentIndexes) {
+            //是否存在索引，如果不存在则建立
+            Map map = (Map) doc.get("key");
+            Object v = map.get("tuple.location");
+//                System.out.println(doc);
+            if (v != null) {
+//                    home.dropIndex(_getReceptorColName(category.getId()), Document.parse(String.format("{'tuple.location':1}")));
+                CJSystem.logging().info(getClass(), String.format("发现文档<%s>的索引：tuple.location=2dsphere", _getDocumentColName()));
+                hasIndex = true;
+                break;
+            }
+        }
+        if (!hasIndex) {
+            home.createIndex(_getDocumentColName(), Document.parse(String.format("{'tuple.location':'2dsphere'}")));
+            CJSystem.logging().info(getClass(), String.format("已为文档<%s>创建索引：tuple.location=2dsphere", _getDocumentColName()));
+        }
     }
 
     @Override
-    public boolean exists(String category, String id) {
-        return home.tupleCount(_getReceptorColName(category), String.format("{'tuple.id':'%s'}", id)) > 0;
+    public void emptyCategory(GeoCategory category) {
+        home.dropTuple(String.format(_getReceptorColName()));
+        home.dropTuple(String.format(_getDocumentColName()));
+        home.dropTuple(String.format(_getCommentColName()));
+        home.dropTuple(String.format(_getLikeColName()));
+        home.dropTuple(String.format(_getFollowColName()));
+        home.dropTuple(String.format(_getMediaColName()));
     }
 
     @Override
-    public void add(String category, GeoReceptor receptor) {
-        home.saveDoc(_getReceptorColName(category), new TupleDocument<>(receptor));
+    public boolean exists(String id) {
+        return home.tupleCount(_getReceptorColName(), String.format("{'tuple.id':'%s'}", id)) > 0;
     }
 
     @Override
-    public void remove(String category, String id) {
-        home.deleteDocOne(_getReceptorColName(category), String.format("{'tuple.id':'%s'}", id));
+    public void add(GeoReceptor receptor) {
+        home.saveDoc(_getReceptorColName(), new TupleDocument<>(receptor));
     }
 
     @Override
-    public GeoReceptor get(String category, String id) {
+    public void remove(String principal, String id) {
+        home.deleteDocOne(_getReceptorColName(), String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, principal));
+    }
+
+    @Override
+    public GeoReceptor get(String id) {
         String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'?(id)'}");
         IQuery<GeoReceptor> query = home.createQuery(cjql);
-        query.setParameter("colname", _getReceptorColName(category));
+        query.setParameter("colname", _getReceptorColName());
         query.setParameter("clazz", GeoReceptor.class.getName());
         query.setParameter("id", id);
         IDocument<GeoReceptor> doc = query.getSingleResult();
@@ -128,11 +135,11 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public List<GeoReceptor> getAllMyReceptor(String person, Object device) {
+    public List<GeoReceptor> getAllMyReceptor(String person) {
         List<GeoReceptor> receptors = new ArrayList<>();
         GeoCategory[] categories = this.geoCategoryService.listCategory();
         for (GeoCategory category : categories) {
-            List<GeoReceptor> list = _listReceptor(person, device, category);
+            List<GeoReceptor> list = _listReceptor(person);
             if (!list.isEmpty()) {
                 receptors.addAll(list);
             }
@@ -141,10 +148,10 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public List<GeosphereDocument> pageDocument(String receptor, String category, String creator, long limit, long skip) {
+    public List<GeosphereDocument> pageDocument(String receptor, String creator, long limit, long skip) {
         String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple ?(colname) ?(clazz) where {'tuple.receptor':'?(receptor)','tuple.creator':'?(creator)'}", limit, skip);
         IQuery<GeosphereDocument> query = home.createQuery(cjql);
-        query.setParameter("colname", _getDocumentColName(category));
+        query.setParameter("colname", _getDocumentColName());
         query.setParameter("clazz", GeosphereDocument.class.getName());
         query.setParameter("receptor", receptor);
         query.setParameter("creator", creator);
@@ -156,23 +163,14 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
         return list;
     }
 
-    private List<GeoReceptor> _listReceptor(String person, Object device, GeoCategory category) {
+    private List<GeoReceptor> _listReceptor(String person) {
         String cjql;
         IQuery<GeoReceptor> query;
-        if (category.getId() == "mobiles") {
-            cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)','tuple.device':'?(device)'}");
-            query = home.createQuery(cjql);
-            query.setParameter("colname", _getReceptorColName(category.getId()));
-            query.setParameter("clazz", GeoReceptor.class.getName());
-            query.setParameter("creator", person);
-            query.setParameter("device", device);
-        } else {
-            cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)'}");
-            query = home.createQuery(cjql);
-            query.setParameter("colname", _getReceptorColName(category.getId()));
-            query.setParameter("clazz", GeoReceptor.class.getName());
-            query.setParameter("creator", person);
-        }
+        cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)'}");
+        query = home.createQuery(cjql);
+        query.setParameter("colname", _getReceptorColName());
+        query.setParameter("clazz", GeoReceptor.class.getName());
+        query.setParameter("creator", person);
         List<IDocument<GeoReceptor>> docs = query.getResultList();
         List<GeoReceptor> list = new ArrayList<>();
         for (IDocument<GeoReceptor> doc : docs) {
@@ -182,52 +180,52 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void updateLocation(String creator, String category, String id, LatLng location) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+    public void updateLocation(String creator, String id, LatLng location) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
-        home.updateDocOne(_getReceptorColName(category), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
-    public void updateRadius(String creator, String category, String id, double radius) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+    public void updateRadius(String creator, String id, double radius) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.radius':'%s'}}", radius));
-        home.updateDocOne(_getReceptorColName(category), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
-    public void updateLeading(String creator, String category, String id, String leading) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+    public void updateLeading(String creator, String id, String leading) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.leading':'%s'}}", leading));
-        home.updateDocOne(_getReceptorColName(category), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
-    public void updateBackground(String creator, String category, String id, BackgroundMode mode, String background) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+    public void updateBackground(String creator, String id, BackgroundMode mode, String background) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.backgroundMode':'%s','tuple.background':'%s'}}", mode, background));
-        home.updateDocOne(_getReceptorColName(category), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
-    public void emptyBackground(String creator, String id, String category) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+    public void emptyBackground(String creator, String id) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.backgroundMode':'%s'},'$unset':{'tuple.background':''}}", BackgroundMode.none));
-        home.updateDocOne(_getReceptorColName(category), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
-    public void updateForeground(String creator, String id, String category, ForegroundMode mode) {
-        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.category':'%s','tuple.creator':'%s'}", id, category, creator));
+    public void updateForeground(String creator, String id, ForegroundMode mode) {
+        Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
         Bson update = Document.parse(String.format("{'$set':{'tuple.foregroundMode':'%s'}}", mode));
-        home.updateDocOne(_getReceptorColName(category), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
     public GeoReceptor getMobileGeoReceptor(String person, String device) {
-        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(person)','tuple.device':'?(device)'}");
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(person)','tuple.device':'?(device)','tuple.moveMode':'moveableSelf'}");
         IQuery<GeoReceptor> query = home.createQuery(cjql);
-        query.setParameter("colname", _getReceptorColName("mobiles"));
+        query.setParameter("colname", _getReceptorColName());
         query.setParameter("clazz", GeoReceptor.class.getName());
         query.setParameter("person", person);
         query.setParameter("device", device);
@@ -240,21 +238,21 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     @Override
     public void updateMobileLocation(String person, String device, LatLng location) {
-        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.device':'%s'}", person, device));
+        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.device':'%s','tuple.moveMode':'moveableSelf'}", person, device));
         Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
-        home.updateDocOne(_getReceptorColName("mobiles"), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
     public void updateMobileRadius(String person, String device, double radius) {
-        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.device':'%s'}", person, device));
+        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.device':'%s','tuple.moveMode':'moveableSelf'}", person, device));
         Bson update = Document.parse(String.format("{'$set':{'tuple.radius':'%s'}}", radius));
-        home.updateDocOne(_getReceptorColName("mobiles"), filter, update);
+        home.updateDocOne(_getReceptorColName(), filter, update);
     }
 
     @Override
-    public void addObserver(String id, String category, String observer) {
-        String colname = String.format("%s.observers", _getReceptorColName(category));
+    public void addObserver(String id, String observer) {
+        String colname = String.format("%s.observers", _getReceptorColName());
         GeoObserver geoObserver = new GeoObserver();
         geoObserver.setObserver(observer);
         geoObserver.setReceptor(id);
@@ -263,14 +261,14 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void removeObserver(String id, String category, String observer) {
-        String colname = String.format("%s.observers", _getReceptorColName(category));
+    public void removeObserver(String id, String observer) {
+        String colname = String.format("%s.observers", _getReceptorColName());
         home.deleteDocOne(colname, String.format("{'tuple.receptor':'%s','tuple.observer':'%s'}", id, observer));
     }
 
     @Override
-    public List<GeoObserver> pageObserver(String id, String category, long limit, long offset) {
-        String colname = String.format("%s.observers", _getReceptorColName(category));
+    public List<GeoObserver> pageObserver(String id, long limit, long offset) {
+        String colname = String.format("%s.observers", _getReceptorColName());
         String cjql = String.format("select {'tuple':'*'}.limit(?(limit)).skip(?(skip)) from tuple ?(colname) ?(clazz) where {'tuple.receptor':'?(receptor)'}");
         IQuery<GeoObserver> query = home.createQuery(cjql);
         query.setParameter("colname", colname);
@@ -287,21 +285,21 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void publishArticle(String creator, String category, GeosphereDocument document) {
-        String colname = _getDocumentColName(category);
+    public void publishArticle(String creator, GeosphereDocument document) {
+        String colname = _getDocumentColName();
         home.saveDoc(colname, new TupleDocument<>(document));
     }
 
     @Override
-    public void removeArticle(String creator, String category, String receptor, String docid) {
-        String colname = _getDocumentColName(category);
+    public void removeArticle(String creator, String receptor, String docid) {
+        String colname = _getDocumentColName();
         home.deleteDocOne(colname, String.format("{'tuple.id':'%s','tuple.receptor':'%s','tuple.creator':'%s'}", docid, receptor, creator));
-        _emptyArticleExtra(category, receptor, docid);
+        _emptyArticleExtra(docid);
     }
 
     @Override
-    public GeosphereDocument getGeoDocument(String category, String docid) {
-        String colname = _getDocumentColName(category);
+    public GeosphereDocument getGeoDocument(String docid) {
+        String colname = _getDocumentColName();
         String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple %s %s where {'tuple.id':'%s'}",
                 colname,
                 GeosphereDocument.class.getName(),
@@ -316,8 +314,8 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public List<GeosphereDocument> findGeoDocuments(String category, List<String> docids) {
-        String colname = _getDocumentColName(category);
+    public List<GeosphereDocument> findGeoDocuments(List<String> docids) {
+        String colname = _getDocumentColName();
         String cjql = String.format("select {'tuple':'*'} from tuple %s %s where {'tuple.id':{'$in':%s}}",
                 colname,
                 GeosphereDocument.class.getName(),
@@ -333,8 +331,8 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public List<GeosphereMedia> listExtraMedia(String category, String docid) {
-        String colname = _getMediaColName(category);
+    public List<GeosphereMedia> listExtraMedia(String docid) {
+        String colname = _getMediaColName();
         String cjql = String.format("select {'tuple':'*'} from tuple %s %s where {'tuple.docid':'%s'}",
                 colname,
                 GeosphereMedia.class.getName(),
@@ -350,18 +348,18 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     //清空互动，点赞、评论、多媒体
-    private void _emptyArticleExtra(String category, String receptor, String docid) {
-        String colname = _getLikeColName(category);
-        home.deleteDocs(colname, String.format("{'tuple.docid':'%s','tuple.receptor':'%s'}", docid, receptor));
-        colname = _getCommentColName(category);
-        home.deleteDocs(colname, String.format("{'tuple.docid':'%s','tuple.receptor':'%s'}", docid, receptor));
-        colname = _getMediaColName(category);
-        home.deleteDocs(colname, String.format("{'tuple.docid':'%s','tuple.receptor':'%s'}", docid, receptor));
+    private void _emptyArticleExtra(String docid) {
+        String colname = _getLikeColName();
+        home.deleteDocs(colname, String.format("{'tuple.docid':'%s'}", docid));
+        colname = _getCommentColName();
+        home.deleteDocs(colname, String.format("{'tuple.docid':'%s'}", docid));
+        colname = _getMediaColName();
+        home.deleteDocs(colname, String.format("{'tuple.docid':'%s'}", docid));
     }
 
     @Override
-    public void like(String principal, String category, String receptor, String docid) {
-        String colname = _getLikeColName(category);
+    public void like(String principal, String receptor, String docid) {
+        String colname = _getLikeColName();
         GeoDocumentLike likePerson = new GeoDocumentLike();
         likePerson.setCtime(System.currentTimeMillis());
         likePerson.setDocid(docid);
@@ -371,14 +369,14 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void unlike(String principal, String category, String receptor, String docid) {
-        String colname = _getLikeColName(category);
+    public void unlike(String principal, String receptor, String docid) {
+        String colname = _getLikeColName();
         home.deleteDocOne(colname, String.format("{'tuple.docid':'%s','tuple.receptor':'%s','tuple.person':'%s'}", docid, receptor, principal));
     }
 
     @Override
-    public void addComment(String principal, String category, String receptor, String docid, String commentid, String content) {
-        String colname = _getCommentColName(category);
+    public void addComment(String principal, String receptor, String docid, String commentid, String content) {
+        String colname = _getCommentColName();
         GeoDocumentComment comment = new GeoDocumentComment();
         comment.setCtime(System.currentTimeMillis());
         comment.setDocid(docid);
@@ -390,14 +388,14 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public void removeComment(String principal, String category, String receptor, String docid, String commentid) {
-        String colname = _getCommentColName(category);
+    public void removeComment(String principal, String receptor, String docid, String commentid) {
+        String colname = _getCommentColName();
         home.deleteDocOne(colname, String.format("{'tuple.docid':'%s','tuple.receptor':'%s','tuple.person':'%s','tuple.id':'%s'}", docid, receptor, principal, commentid));
     }
 
     @Override
-    public void addMedia(String category, GeoDocumentMedia media) {
-        String colname = _getMediaColName(category);
+    public void addMedia(GeoDocumentMedia media) {
+        String colname = _getMediaColName();
         home.saveDoc(colname, new TupleDocument<>(media));
     }
 

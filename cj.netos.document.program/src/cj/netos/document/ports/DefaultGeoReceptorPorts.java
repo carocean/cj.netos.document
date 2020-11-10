@@ -24,13 +24,36 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     @CjServiceRef
     IGeoReceptorService geoReceptorService;
 
+    private void _demandAdminRights(ISecuritySession securitySession) throws CircuitException {
+        boolean hasRights = false;
+        for (int i = 0; i < securitySession.roleCount(); i++) {
+            String role = securitySession.role(i);
+            if (role.startsWith("platform:administrators")) {
+                hasRights = true;
+                break;
+            }
+        }
+        if (!hasRights) {
+            throw new CircuitException("801", "无权访问");
+        }
+    }
+
     @Override
-    public void addGeoReceptor(ISecuritySession securitySession, String id, String title, String category, String leading, LatLng location, double radius, int uDistance) throws CircuitException {
+    public void emptyReceptors(ISecuritySession securitySession) throws CircuitException {
+        _demandAdminRights(securitySession);
+        List<GeoCategory> list = geoCategoryService.listAllCategory();
+        for (GeoCategory category : list) {
+            geoReceptorService.emptyCategory(category);
+        }
+    }
+
+    @Override
+    public void addGeoReceptor(ISecuritySession securitySession, String id, String title, String channel, String category, String brand, String leading, LatLng location, double radius, int uDistance) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
-        if (geoReceptorService.exists(category, id)) {
+        if (geoReceptorService.exists(id)) {
             throw new CircuitException("500", String.format("已存在地理感知器:%s 在分类:%s", id, category));
         }
         GeoReceptor receptor = new GeoReceptor();
@@ -38,13 +61,16 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         receptor.setRadius(radius);
         receptor.setId(id);
         receptor.setCtime(System.currentTimeMillis());
+        receptor.setChannel(channel);
         receptor.setCategory(category);
+        receptor.setBrand(brand);
         receptor.setDevice((String) securitySession.property("device"));
         receptor.setLeading(leading);
         receptor.setLocation(location);
         receptor.setTitle(title);
         receptor.setuDistance(uDistance);
-        geoReceptorService.add(category, receptor);
+        receptor.setMoveMode(geoCategory.getMoveMode());//将分类的移动模式拷贝过来，一般用于移动感知器，在移动模式下有且仅有类别才有此模式
+        geoReceptorService.add(receptor);
     }
 
     @Override
@@ -57,166 +83,73 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
 
     @Override
     public List<GeoReceptor> getAllMyReceptor(ISecuritySession securitySession) throws CircuitException {
-        return geoReceptorService.getAllMyReceptor(securitySession.principal(), securitySession.property("device"));
+        return geoReceptorService.getAllMyReceptor(securitySession.principal());
     }
 
     @Override
-    public void removeGeoReceptor(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.remove(category, id);
+    public void removeGeoReceptor(ISecuritySession securitySession, String id) throws CircuitException {
+        geoReceptorService.remove(securitySession.principal(),id);
     }
 
     @Override
-    public List<GeosphereDocument> pageDocument(ISecuritySession securitySession, String id, String category, String creator, long limit, long skip) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null) {
-            throw new CircuitException("500", String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-        }
-
-        return geoReceptorService.pageDocument(id, category, creator, limit, skip);
+    public List<GeosphereDocument> pageDocument(ISecuritySession securitySession, String id, String creator, long limit, long skip) throws CircuitException {
+        return geoReceptorService.pageDocument(id, creator, limit, skip);
     }
 
     @Override
-    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, String category, List<String> docids) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器分类:%s", category));
-        }
-
-        return geoReceptorService.findGeoDocuments(category, docids);
+    public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, List<String> docids) throws CircuitException {
+        return geoReceptorService.findGeoDocuments(docids);
     }
 
     @Override
-    public void updateLocation(ISecuritySession securitySession, String id, String category, LatLng location) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.updateLocation(securitySession.principal(), category, id, location);
+    public void updateLocation(ISecuritySession securitySession, String id, LatLng location) throws CircuitException {
+        geoReceptorService.updateLocation(securitySession.principal(), id, location);
     }
 
     @Override
-    public void updateRadius(ISecuritySession securitySession, String id, String category, double radius) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.updateRadius(securitySession.principal(), category, id, radius);
+    public void updateRadius(ISecuritySession securitySession, String id, double radius) throws CircuitException {
+        geoReceptorService.updateRadius(securitySession.principal(), id, radius);
     }
 
     @Override
-    public void updateLeading(ISecuritySession securitySession, String id, String category, String leading) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.updateLeading(securitySession.principal(), category, id, leading);
+    public void updateLeading(ISecuritySession securitySession, String id, String leading) throws CircuitException {
+        geoReceptorService.updateLeading(securitySession.principal(), id, leading);
     }
 
     @Override
-    public void updateBackground(ISecuritySession securitySession, String id, String category, BackgroundMode mode, String background) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.updateBackground(securitySession.principal(), category, id, mode, background);
+    public void updateBackground(ISecuritySession securitySession, String id, BackgroundMode mode, String background) throws CircuitException {
+        geoReceptorService.updateBackground(securitySession.principal(), id, mode, background);
     }
 
     @Override
-    public void emptyBackground(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.emptyBackground(securitySession.principal(), id, category);
+    public void emptyBackground(ISecuritySession securitySession, String id) throws CircuitException {
+        geoReceptorService.emptyBackground(securitySession.principal(), id);
     }
 
     @Override
-    public void updateForeground(ISecuritySession securitySession, String id, String category, ForegroundMode mode) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
-        if (receptor == null || !receptor.getCreator().equals(securitySession.principal())) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", id, category));
-            return;
-        }
-        geoReceptorService.updateForeground(securitySession.principal(), id, category, mode);
+    public void updateForeground(ISecuritySession securitySession, String id, ForegroundMode mode) throws CircuitException {
+        geoReceptorService.updateForeground(securitySession.principal(), id, mode);
     }
 
     @Override
     public GeoReceptor getMobileGeoReceptor(ISecuritySession securitySession) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get("mobiles");
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:mobiles"));
-        }
         GeoReceptor receptor = geoReceptorService.getMobileGeoReceptor(securitySession.principal(), securitySession.property("device") + "");
         return receptor;
     }
 
     @Override
-    public GeoReceptor getGeoReceptor(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, id);
+    public GeoReceptor getGeoReceptor(ISecuritySession securitySession, String id) throws CircuitException {
+        GeoReceptor receptor = geoReceptorService.get(id);
         return receptor;
     }
 
     @Override
     public void updateMobileLocation(ISecuritySession securitySession, LatLng location) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get("mobiles");
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:mobiles"));
-        }
         geoReceptorService.updateMobileLocation(securitySession.principal(), securitySession.property("device") + "", location);
     }
 
     @Override
     public void updateMobileRadius(ISecuritySession securitySession, double radius) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get("mobiles");
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:mobiles"));
-        }
         geoReceptorService.updateMobileRadius(securitySession.principal(), securitySession.property("device") + "", radius);
     }
 //
@@ -230,93 +163,68 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
 //    }
 
     @Override
-    public void addObserver(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        this.geoReceptorService.addObserver(id, category, securitySession.principal());
+    public void addObserver(ISecuritySession securitySession, String id) throws CircuitException {
+        this.geoReceptorService.addObserver(id, securitySession.principal());
     }
 
     @Override
-    public void removeObserver(ISecuritySession securitySession, String id, String category) throws CircuitException {
-        this.geoReceptorService.removeObserver(id, category, securitySession.principal());
+    public void removeObserver(ISecuritySession securitySession, String id) throws CircuitException {
+        this.geoReceptorService.removeObserver(id, securitySession.principal());
     }
 
     @Override
-    public List<GeoObserver> pageObserver(ISecuritySession securitySession, String id, String category, long limit, long offset) throws CircuitException {
-        return this.geoReceptorService.pageObserver(id, category, limit, offset);
+    public List<GeoObserver> pageObserver(ISecuritySession securitySession, String id, long limit, long offset) throws CircuitException {
+        return this.geoReceptorService.pageObserver(id, limit, offset);
     }
 
     @Override
-    public void publishArticle(ISecuritySession securitySession, String category, GeosphereDocument document) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        GeoReceptor receptor = geoReceptorService.get(category, document.getReceptor());
+    public void publishArticle(ISecuritySession securitySession, GeosphereDocument document) throws CircuitException {
+        GeoReceptor receptor = geoReceptorService.get(document.getReceptor());
         if (receptor == null) {
-            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 在分类:%s，因此被忽略", document.getReceptor(), category));
+            CJSystem.logging().warn(getClass(), String.format("不存在感知器:%s, 因此被忽略", document.getReceptor()));
             return;
         }
-        this.geoReceptorService.publishArticle(securitySession.principal(), category, document);
+        document.setCategory(receptor.getCategory());
+        document.setChannel(receptor.getChannel());
+        document.setBrand(receptor.getBrand());
+        this.geoReceptorService.publishArticle(securitySession.principal(), document);
     }
 
     @Override
-    public void removeArticle(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        this.geoReceptorService.removeArticle(securitySession.principal(), category, receptor, docid);
+    public void removeArticle(ISecuritySession securitySession, String receptor, String docid) throws CircuitException {
+        this.geoReceptorService.removeArticle(securitySession.principal(), receptor, docid);
     }
 
     @Override
-    public GeosphereDocument getGeoDocument(ISecuritySession securitySession, String category, String docid) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器分类:%s", category));
-        }
-        return this.geoReceptorService.getGeoDocument(category, docid);
+    public GeosphereDocument getGeoDocument(ISecuritySession securitySession, String docid) throws CircuitException {
+        return this.geoReceptorService.getGeoDocument(docid);
     }
 
     @Override
-    public void like(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        this.geoReceptorService.like(securitySession.principal(), category, receptor, docid);
+    public void like(ISecuritySession securitySession, String receptor, String docid) throws CircuitException {
+        this.geoReceptorService.like(securitySession.principal(), receptor, docid);
     }
 
     @Override
-    public void unlike(ISecuritySession securitySession, String category, String receptor, String docid) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        this.geoReceptorService.unlike(securitySession.principal(), category, receptor, docid);
+    public void unlike(ISecuritySession securitySession, String receptor, String docid) throws CircuitException {
+        this.geoReceptorService.unlike(securitySession.principal(), receptor, docid);
     }
 
     @Override
-    public void addComment(ISecuritySession securitySession, String category, String receptor, String docid, String commentid, String content) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        this.geoReceptorService.addComment(securitySession.principal(), category, receptor, docid, commentid, content);
+    public void addComment(ISecuritySession securitySession, String receptor, String docid, String commentid, String content) throws CircuitException {
+        this.geoReceptorService.addComment(securitySession.principal(), receptor, docid, commentid, content);
     }
 
     @Override
-    public void removeComment(ISecuritySession securitySession, String category, String receptor, String docid, String commentid) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        this.geoReceptorService.removeComment(securitySession.principal(), category, receptor, docid, commentid);
+    public void removeComment(ISecuritySession securitySession, String receptor, String docid, String commentid) throws CircuitException {
+        this.geoReceptorService.removeComment(securitySession.principal(), receptor, docid, commentid);
     }
 
     @Override
-    public void addMedia(ISecuritySession securitySession, String category, String receptor, String docid, String id, String type, String src, String text, String leading) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
+    public void addMedia(ISecuritySession securitySession, String receptor, String docid, String id, String type, String src, String text, String leading) throws CircuitException {
+        boolean exists = geoReceptorService.exists(receptor);
+        if (!exists) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", receptor));
         }
         GeoDocumentMedia media = new GeoDocumentMedia();
         media.setCtime(System.currentTimeMillis());
@@ -328,15 +236,12 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
         media.setText(text);
         media.setType(type);
         media.setCreator(securitySession.principal());
-        this.geoReceptorService.addMedia(category, media);
+        this.geoReceptorService.addMedia(media);
     }
 
     @Override
-    public List<GeosphereMedia> listExtraMedia(ISecuritySession securitySession, String category, String docid) throws CircuitException {
-        GeoCategory geoCategory = geoCategoryService.get(category);
-        if (geoCategory == null) {
-            throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
-        }
-        return geoReceptorService.listExtraMedia(category, docid);
+    public List<GeosphereMedia> listExtraMedia(ISecuritySession securitySession, String docid) throws CircuitException {
+
+        return geoReceptorService.listExtraMedia(docid);
     }
 }

@@ -21,6 +21,8 @@ dependencies {
     compile group: 'cj.studio.gateway2', name: 'cj.studio.orm.mongodb', version: ref_cj_studio_orm_mongodb
     compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.12.1'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.3.1'
+    // https://mvnrepository.com/artifact/com.belerweb/pinyin4j
+    compile group: 'com.belerweb', name: 'pinyin4j', version: '2.5.1'
     implementation project(':cj.netos.document.openports')
 }
 task copyRefembeds(type: Copy) {
@@ -31,7 +33,7 @@ task copyRefembeds(type: Copy) {
 }
 task copyReferences(type: Copy) {
     from configurations.compileClasspath.files {
-        include 'cj.netos.document.openports-*.jar', 'cj.lns.chip.sos.cube-*.jar', 'mongodb-driver-*.jar', 'bson-*.jar', 'cj.studio.openport-*.jar','okhttp-*.jar'
+        include 'cj.netos.document.openports-*.jar', 'cj.lns.chip.sos.cube-*.jar', 'mongodb-driver-*.jar', 'bson-*.jar', 'cj.studio.openport-*.jar','okhttp-*.jar','pinyin4j-*.jar'
     }
     into 'src/cj/references'
 }

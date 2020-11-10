@@ -9,7 +9,9 @@ public class GeoCategory {
     String id;
     String title;
     String leading;
+    String channel;//所属频到标识
     String creator;
+    boolean isHot;//是否热点类别
     int sort;
     long ctime;
     double defaultRadius;
@@ -21,6 +23,22 @@ public class GeoCategory {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public boolean isHot() {
+        return isHot;
+    }
+
+    public void setHot(boolean hot) {
+        isHot = hot;
     }
 
     public String getLeading() {

@@ -21,11 +21,17 @@ import java.util.List;
 @CjOpenports(usage = "地理感知器")
 public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "增加地理感知器")
+    void emptyReceptors(ISecuritySession securitySession
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "增加地理感知器")
     void addGeoReceptor(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
             @CjOpenportParameter(usage = "分类标识", name = "title") String title,
+            @CjOpenportParameter(usage = "频道标识", name = "channel") String channel,
             @CjOpenportParameter(usage = "分类标识", name = "category") String category,
+            @CjOpenportParameter(usage = "所属品牌，可为空", name = "brand") String brand,
             @CjOpenportParameter(usage = "分类标识", name = "leading") String leading,
             @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location,
             @CjOpenportParameter(usage = "距中心点矩离，单位为米", name = "radius") double radius,
@@ -44,7 +50,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     List<GeosphereDocument> pageDocument(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "文档创建者", name = "creator") String creator,
             @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
             @CjOpenportParameter(usage = "记录偏移", name = "skip") long skip
@@ -53,22 +58,19 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "获取文档")
     List<GeosphereDocument> findGeoDocuments(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "消息id集合", name = "docids") List<String> docids
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除地理感知器")
     void removeGeoReceptor(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id
     ) throws CircuitException;
 
     @CjOpenport(usage = "更新位置")
     void updateLocation(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location
     ) throws CircuitException;
 
@@ -76,7 +78,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     void updateRadius(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "半径", name = "radius") double radius
     ) throws CircuitException;
 
@@ -84,7 +85,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     void updateBackground(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "背景模式。有：vertical,horizontal,none,", name = "mode", defaultValue = "none") BackgroundMode mode,
             @CjOpenportParameter(usage = "背景文件路径", name = "background") String background
     ) throws CircuitException;
@@ -92,15 +92,13 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "清除背景")
     void emptyBackground(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id
     ) throws CircuitException;
 
     @CjOpenport(usage = "更新前景色")
     void updateForeground(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "前景模式。有：original,white,", name = "mode", defaultValue = "original") ForegroundMode mode
     ) throws CircuitException;
 
@@ -108,7 +106,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     void updateLeading(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "图标地址", name = "leading") String leading
     ) throws CircuitException;
 
@@ -120,8 +117,7 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "获取设备感知器")
     GeoReceptor getGeoReceptor(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id
     ) throws CircuitException;
 
     @CjOpenport(usage = "更新移动设备感知器位置")
@@ -160,22 +156,19 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "添加观察者")
     void addObserver(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除观察者")
     void removeObserver(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category
+            @CjOpenportParameter(usage = "标识", name = "id") String id
     ) throws CircuitException;
 
     @CjOpenport(usage = "分页观察者")
     List<GeoObserver> pageObserver(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
-            @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
             @CjOpenportParameter(usage = "偏移", name = "offset") long offset
     ) throws CircuitException;
@@ -183,14 +176,12 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "发布感知器文档", command = "post")
     void publishArticle(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器文档", name = "document", in = PKeyInRequest.content) GeosphereDocument document
     ) throws CircuitException;
 
     @CjOpenport(usage = "删除我的文档")
     void removeArticle(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid
     ) throws CircuitException;
@@ -198,14 +189,12 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "获取我的文档")
     GeosphereDocument getGeoDocument(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid
     ) throws CircuitException;
 
     @CjOpenport(usage = "我点赞文档")
     void like(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid
     ) throws CircuitException;
@@ -213,7 +202,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "我取消点赞文档")
     void unlike(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid
     ) throws CircuitException;
@@ -221,7 +209,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "我评论文档")
     void addComment(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid,
             @CjOpenportParameter(usage = "评论标识", name = "commentid") String commentid,
@@ -231,7 +218,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "删除我的评论")
     void removeComment(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid,
             @CjOpenportParameter(usage = "评论标识", name = "commentid") String commentid
@@ -240,7 +226,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "文档的多媒体附件")
     void addMedia(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "消息id", name = "docid") String docid,
             @CjOpenportParameter(usage = "多媒体标识", name = "id") String id,
@@ -254,7 +239,6 @@ public interface IGeoReceptorPorts extends IOpenportService {
     @CjOpenport(usage = "列出多媒体附件")
     List<GeosphereMedia> listExtraMedia(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "文档标识", name = "docid")
                     String docid
     ) throws CircuitException;

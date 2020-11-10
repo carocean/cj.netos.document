@@ -10,6 +10,9 @@ public class GeosphereDocument {
     String sourceSite;
     String sourceApp;
     String receptor;
+    String category;
+    String channel;
+    String brand;
     String creator;
     long ctime;
     long atime;
@@ -27,6 +30,30 @@ public class GeosphereDocument {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getUpstreamPerson() {
