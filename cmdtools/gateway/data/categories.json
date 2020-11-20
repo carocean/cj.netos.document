@@ -1,9 +1,406 @@
 [
   {
+    "id": "commons",
+    "title": "常用",
+    "leading": "http://47.105.165.186:7100/public/geosphere/icons/commons.png",
+    "sort": 0,
+    "categories": [
+      {
+        "id": "",
+        "title": "外卖",
+        "leading": "",
+        "isHot": false,
+        "sort": 0,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "美团",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "饿了么",
+            "isHot": false,
+            "sort": 1
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "租车",
+        "leading": "",
+        "isHot": false,
+        "sort": 1,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "神州行",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "滴滴",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          },
+          {
+            "id": "",
+            "title": "曹操",
+            "leading": "",
+            "isHot": false,
+            "sort": 2
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "游戏",
+        "leading": "",
+        "isHot": false,
+        "sort": 1,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "英雄联盟",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "和平精英",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          },
+          {
+            "id": "",
+            "title": "绝地求生",
+            "leading": "",
+            "isHot": false,
+            "sort": 2
+          },
+          {
+            "id": "",
+            "title": "王者荣耀",
+            "leading": "",
+            "isHot": false,
+            "sort": 3
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "社区",
+        "leading": "",
+        "isHot": true,
+        "sort": 3,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "写字楼",
+        "leading": "",
+        "isHot": true,
+        "sort": 4,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "公司",
+        "leading": "",
+        "isHot": true,
+        "sort": 5,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "工厂",
+        "leading": "",
+        "isHot": false,
+        "sort": 6,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "培训机构",
+        "leading": "",
+        "isHot": false,
+        "sort": 7,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "地域",
+        "leading": "",
+        "isHot": true,
+        "sort": 8,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "协会",
+        "leading": "",
+        "isHot": false,
+        "sort": 9,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "朋友圈",
+        "leading": "",
+        "isHot": false,
+        "sort": 10,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "网红",
+        "leading": "",
+        "isHot": false,
+        "sort": 11,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "电商",
+        "leading": "",
+        "isHot": false,
+        "sort": 12,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "直播带货",
+        "leading": "",
+        "isHot": false,
+        "sort": 13,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "品牌",
+        "leading": "",
+        "isHot": false,
+        "sort": 14,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "房地产",
+        "leading": "",
+        "isHot": false,
+        "sort": 15,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "万科",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "凤凰城",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          },
+          {
+            "id": "",
+            "title": "绿地",
+            "leading": "",
+            "isHot": false,
+            "sort": 2
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "汽车",
+        "leading": "",
+        "isHot": false,
+        "sort": 16,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "丰田",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "本田",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          },
+          {
+            "id": "",
+            "title": "别克",
+            "leading": "",
+            "isHot": false,
+            "sort": 2
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "家电",
+        "leading": "",
+        "isHot": false,
+        "sort": 17,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "美的",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "TCL",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          },
+          {
+            "id": "",
+            "title": "格力",
+            "leading": "",
+            "isHot": false,
+            "sort": 2
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "电脑",
+        "leading": "",
+        "isHot": false,
+        "sort": 18,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "联想",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "戴尔",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          }
+        ]
+      },
+      {
+        "id": "",
+        "title": "服饰",
+        "leading": "",
+        "isHot": false,
+        "sort": 19,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "美容护肤",
+        "leading": "",
+        "isHot": false,
+        "sort": 20,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "电动车",
+        "leading": "",
+        "isHot": false,
+        "sort": 21,
+        "moveMode": "unmoveable",
+        "brands": [
+        ]
+      },
+      {
+        "id": "",
+        "title": "水",
+        "leading": "",
+        "isHot": false,
+        "sort": 22,
+        "moveMode": "unmoveable",
+        "brands": [
+          {
+            "id": "",
+            "title": "益宝",
+            "leading": "",
+            "isHot": false,
+            "sort": 0
+          },
+          {
+            "id": "",
+            "title": "农夫山泉",
+            "leading": "",
+            "isHot": false,
+            "sort": 1
+          },
+          {
+            "id": "",
+            "title": "康师傅",
+            "leading": "",
+            "isHot": false,
+            "sort": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "restaurants",
     "title": "吃",
     "leading": "http://47.105.165.186:7100/public/geosphere/icons/chihe.png",
-    "sort": 0,
+    "sort": 1,
     "categories": [
       {
         "id": "",
@@ -409,7 +806,7 @@
     "id": "accommodations",
     "title": "住",
     "leading": "http://47.105.165.186:7100/public/geosphere/icons/zhusu.png",
-    "sort": 1,
+    "sort": 2,
     "categories": [
       {
         "id": "",
@@ -622,7 +1019,7 @@
     "id": "transits",
     "title": "行",
     "leading": "http://47.105.165.186:7100/public/geosphere/icons/chepai.png",
-    "sort": 2,
+    "sort": 3,
     "categories": [
       {
         "id": "",
