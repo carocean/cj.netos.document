@@ -3,9 +3,7 @@ package cj.netos.document.openports.ports;
 import cj.netos.document.openports.entities.BackgroundMode;
 import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.LatLng;
-import cj.netos.document.openports.entities.geo.GeoObserver;
-import cj.netos.document.openports.entities.geo.GeoReceptor;
-import cj.netos.document.openports.entities.geo.GeosphereDocument;
+import cj.netos.document.openports.entities.geo.*;
 import cj.netos.document.openports.entities.netflow.ChannelMedia;
 import cj.netos.document.openports.entities.netflow.GeosphereMedia;
 import cj.studio.ecm.net.CircuitException;
@@ -243,4 +241,20 @@ public interface IGeoReceptorPorts extends IOpenportService {
                     String docid
     ) throws CircuitException;
 
+    @CjOpenport(usage = "分页点赞者")
+    List<GeoDocumentLike> pageLike(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "文档标识", name = "docid") String docid,
+            @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
+            @CjOpenportParameter(usage = "记录偏移", name = "offset") long offset
+
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "分页评论者")
+    List<GeoDocumentComment> pageComment(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "文档标识", name = "docid") String docid,
+            @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
+            @CjOpenportParameter(usage = "记录偏移", name = "offset") long offset
+    ) throws CircuitException;
 }

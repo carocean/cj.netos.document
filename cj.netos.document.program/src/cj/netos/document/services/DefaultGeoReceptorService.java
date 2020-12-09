@@ -347,6 +347,44 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
         return list;
     }
 
+    @Override
+    public List<GeoDocumentLike> pageLike(String docid, long limit, long skip) {
+        String colname = _getLikeColName();
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple %s %s where {'tuple.docid':'%s'}",
+                limit,
+                skip,
+                colname,
+                GeoDocumentLike.class.getName(),
+                docid
+        );
+        IQuery<GeoDocumentLike> query = home.createQuery(cjql);
+        List<IDocument<GeoDocumentLike>> docs = query.getResultList();
+        List<GeoDocumentLike> list = new ArrayList<>();
+        for (IDocument<GeoDocumentLike> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
+    @Override
+    public List<GeoDocumentComment> pageComment(String docid, long limit, long skip) {
+        String colname = _getCommentColName();
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple %s %s where {'tuple.docid':'%s'}",
+                limit,
+                skip,
+                colname,
+                GeoDocumentComment.class.getName(),
+                docid
+        );
+        IQuery<GeoDocumentComment> query = home.createQuery(cjql);
+        List<IDocument<GeoDocumentComment>> docs = query.getResultList();
+        List<GeoDocumentComment> list = new ArrayList<>();
+        for (IDocument<GeoDocumentComment> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
     //清空互动，点赞、评论、多媒体
     private void _emptyArticleExtra(String docid) {
         String colname = _getLikeColName();

@@ -72,4 +72,9 @@ public interface IGeoReceptorService {
 
     void emptyCategory(GeoCategory category);
 
+
+    List<GeoDocumentLike> pageLike(String docid, long limit, long skip);
+
+    List<GeoDocumentComment> pageComment(String docid, long limit, long skip);
+
 }

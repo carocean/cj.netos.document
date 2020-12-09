@@ -244,4 +244,14 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
 
         return geoReceptorService.listExtraMedia(docid);
     }
+
+    @Override
+    public List<GeoDocumentLike> pageLike(ISecuritySession securitySession, String docid, long limit, long skip) throws CircuitException {
+        return geoReceptorService.pageLike(docid,limit,skip);
+    }
+
+    @Override
+    public List<GeoDocumentComment> pageComment(ISecuritySession securitySession, String docid, long limit, long skip) throws CircuitException {
+        return geoReceptorService.pageComment(docid,limit,skip);
+    }
 }
