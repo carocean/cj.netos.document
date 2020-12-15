@@ -105,6 +105,11 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public List<GeosphereDocument> pageDocument2(ISecuritySession securitySession, String id, long limit, long skip) throws CircuitException {
+        return geoReceptorService.pageDocument2(id, limit, skip);
+    }
+
+    @Override
     public List<GeosphereDocument> findGeoDocuments(ISecuritySession securitySession, List<String> docids) throws CircuitException {
         return geoReceptorService.findGeoDocuments(docids);
     }

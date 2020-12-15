@@ -79,4 +79,6 @@ public interface IGeoReceptorService {
 
     boolean existsTitleOnTownCode(String title, String street);
 
+    List<GeosphereDocument> pageDocument2(String id, long limit, long skip);
+
 }

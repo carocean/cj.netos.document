@@ -168,6 +168,21 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
         return list;
     }
 
+    @Override
+    public List<GeosphereDocument> pageDocument2(String receptor, long limit, long skip) {
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple ?(colname) ?(clazz) where {'tuple.receptor':'?(receptor)'}", limit, skip);
+        IQuery<GeosphereDocument> query = home.createQuery(cjql);
+        query.setParameter("colname", _getDocumentColName());
+        query.setParameter("clazz", GeosphereDocument.class.getName());
+        query.setParameter("receptor", receptor);
+        List<IDocument<GeosphereDocument>> docs = query.getResultList();
+        List<GeosphereDocument> list = new ArrayList<>();
+        for (IDocument<GeosphereDocument> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
     private List<GeoReceptor> _listReceptor(String person) {
         String cjql;
         IQuery<GeoReceptor> query;

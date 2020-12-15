@@ -61,6 +61,14 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "记录偏移", name = "skip") long skip
     ) throws CircuitException;
 
+    @CjOpenport(usage = "查询消息")
+    List<GeosphereDocument> pageDocument2(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
+            @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
+            @CjOpenportParameter(usage = "记录偏移", name = "skip") long skip
+    ) throws CircuitException;
+
     @CjOpenport(usage = "获取文档")
     List<GeosphereDocument> findGeoDocuments(
             ISecuritySession securitySession,
