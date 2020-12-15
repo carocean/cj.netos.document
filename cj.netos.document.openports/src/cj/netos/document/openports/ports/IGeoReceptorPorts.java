@@ -22,11 +22,12 @@ public interface IGeoReceptorPorts extends IOpenportService {
     void emptyReceptors(ISecuritySession securitySession
     ) throws CircuitException;
 
-    @CjOpenport(usage = "增加地理感知器")
+    @CjOpenport(usage = "增加地理感知器，在同一乡镇街道下唯一")
     void addGeoReceptor(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "id") String id,
             @CjOpenportParameter(usage = "分类标识", name = "title") String title,
+            @CjOpenportParameter(usage = "乡镇或镇道行政代码", name = "townCode") String townCode,
             @CjOpenportParameter(usage = "频道标识", name = "channel") String channel,
             @CjOpenportParameter(usage = "分类标识", name = "category") String category,
             @CjOpenportParameter(usage = "所属品牌，可为空", name = "brand") String brand,
@@ -34,6 +35,13 @@ public interface IGeoReceptorPorts extends IOpenportService {
             @CjOpenportParameter(usage = "位置", name = "location", type = LatLng.class) LatLng location,
             @CjOpenportParameter(usage = "距中心点矩离，单位为米", name = "radius") double radius,
             @CjOpenportParameter(usage = "更新距离仅在mobiles分类下的感知器有用，默认10米", name = "uDistance", defaultValue = "10") int uDistance
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "判断地理感知器名，在同一乡镇街道下是否唯一")
+    boolean existsGeoReceptorOnTown(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "分类标识", name = "title") String title,
+            @CjOpenportParameter(usage = "乡镇或镇道行政代码", name = "townCode") String townCode
     ) throws CircuitException;
 
     @CjOpenport(usage = "重建空间索引")

@@ -6,7 +6,6 @@ import cj.netos.document.openports.entities.BackgroundMode;
 import cj.netos.document.openports.entities.ForegroundMode;
 import cj.netos.document.openports.entities.LatLng;
 import cj.netos.document.openports.entities.geo.*;
-import cj.netos.document.openports.entities.netflow.ChannelMedia;
 import cj.netos.document.openports.entities.netflow.GeosphereMedia;
 import cj.netos.document.openports.ports.IGeoReceptorPorts;
 import cj.studio.ecm.CJSystem;
@@ -48,17 +47,26 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public void addGeoReceptor(ISecuritySession securitySession, String id, String title, String channel, String category, String brand, String leading, LatLng location, double radius, int uDistance) throws CircuitException {
+    public boolean existsGeoReceptorOnTown(ISecuritySession securitySession, String title, String townCode) throws CircuitException {
+        return geoReceptorService.existsTitleOnTownCode(title,townCode);
+    }
+
+    @Override
+    public void addGeoReceptor(ISecuritySession securitySession, String id, String title,String townCode, String channel, String category, String brand, String leading, LatLng location, double radius, int uDistance) throws CircuitException {
         GeoCategory geoCategory = geoCategoryService.get(category);
         if (geoCategory == null) {
             throw new CircuitException("500", String.format("不存在地理感知器:%s", category));
         }
         if (geoReceptorService.exists(id)) {
-            throw new CircuitException("500", String.format("已存在地理感知器:%s 在分类:%s", id, category));
+            throw new CircuitException("500", String.format("已存在地理感知器:%s", id));
+        }
+        if (geoReceptorService.existsTitleOnTownCode(title,townCode)) {
+            throw new CircuitException("500", String.format("已存在地理感知器:%s，在乡镇或街道：%s", title,townCode));
         }
         GeoReceptor receptor = new GeoReceptor();
         receptor.setCreator(securitySession.principal());
         receptor.setRadius(radius);
+        receptor.setTownCode(townCode);
         receptor.setId(id);
         receptor.setCtime(System.currentTimeMillis());
         receptor.setChannel(channel);

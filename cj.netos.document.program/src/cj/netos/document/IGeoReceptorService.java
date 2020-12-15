@@ -77,4 +77,6 @@ public interface IGeoReceptorService {
 
     List<GeoDocumentComment> pageComment(String docid, long limit, long skip);
 
+    boolean existsTitleOnTownCode(String title, String street);
+
 }

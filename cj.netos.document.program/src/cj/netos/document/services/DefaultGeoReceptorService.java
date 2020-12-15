@@ -111,6 +111,11 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
+    public boolean existsTitleOnTownCode(String title, String townCode) {
+        return home.tupleCount(_getReceptorColName(), String.format("{'tuple.title':'%s','tuple.townCode':'%s'}", title, townCode)) > 0;
+    }
+
+    @Override
     public void add(GeoReceptor receptor) {
         home.saveDoc(_getReceptorColName(), new TupleDocument<>(receptor));
     }

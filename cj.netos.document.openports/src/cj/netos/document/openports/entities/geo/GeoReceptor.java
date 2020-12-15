@@ -11,6 +11,7 @@ import cj.netos.document.openports.entities.LatLng;
 public class GeoReceptor {
     String id;
     String title;
+    String townCode;
     String category;
     String channel;
     String brand;
@@ -33,6 +34,14 @@ public class GeoReceptor {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTownCode() {
+        return townCode;
+    }
+
+    public void setTownCode(String townCode) {
+        this.townCode = townCode;
     }
 
     public String getChannel() {
