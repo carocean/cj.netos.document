@@ -250,6 +250,12 @@ public interface IGeoReceptorPorts extends IOpenportService {
     ) throws CircuitException;
 
 
+    @CjOpenport(usage = "文档的多媒体附件",command = "post")
+    void addMedia2(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "media", name = "media",in = PKeyInRequest.content)  GeoDocumentMedia media
+    ) throws CircuitException;
+
     @CjOpenport(usage = "列出多媒体附件")
     List<GeosphereMedia> listExtraMedia(
             ISecuritySession securitySession,

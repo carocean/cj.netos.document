@@ -253,6 +253,17 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public void addMedia2(ISecuritySession securitySession, GeoDocumentMedia media) throws CircuitException {
+        boolean exists = geoReceptorService.exists(media.getReceptor());
+        if (!exists) {
+            throw new CircuitException("500", String.format("不存在地理感知器:%s", media.getReceptor()));
+        }
+        media.setCtime(System.currentTimeMillis());
+        media.setCreator(securitySession.principal());
+        this.geoReceptorService.addMedia(media);
+    }
+
+    @Override
     public List<GeosphereMedia> listExtraMedia(ISecuritySession securitySession, String docid) throws CircuitException {
 
         return geoReceptorService.listExtraMedia(docid);
