@@ -52,6 +52,17 @@ public interface IGeoReceptorPorts extends IOpenportService {
             ISecuritySession securitySession
     ) throws CircuitException;
 
+    @CjOpenport(usage = "查询我的已删除的感知器")
+    List<GeoReceptor> listMyDeletedReceptor(
+            ISecuritySession securitySession
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "恢复我的已删的感知器")
+    void recoverReceptor(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id
+    ) throws CircuitException;
+
     @CjOpenport(usage = "查询指定用户创建的消息")
     List<GeosphereDocument> pageDocument(
             ISecuritySession securitySession,

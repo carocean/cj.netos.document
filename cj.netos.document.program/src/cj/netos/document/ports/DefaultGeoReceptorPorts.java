@@ -95,6 +95,16 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
+    public List<GeoReceptor> listMyDeletedReceptor(ISecuritySession securitySession) throws CircuitException {
+        return geoReceptorService.listMyDeletedReceptor(securitySession.principal());
+    }
+
+    @Override
+    public void recoverReceptor(ISecuritySession securitySession,String id) throws CircuitException {
+         geoReceptorService.recoverReceptor(securitySession.principal(),id);
+    }
+
+    @Override
     public void removeGeoReceptor(ISecuritySession securitySession, String id) throws CircuitException {
         geoReceptorService.remove(securitySession.principal(),id);
     }

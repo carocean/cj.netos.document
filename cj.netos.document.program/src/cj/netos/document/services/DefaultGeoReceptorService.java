@@ -122,9 +122,18 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     @Override
     public void remove(String principal, String id) {
-        home.deleteDocOne(_getReceptorColName(), String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, principal));
+//        home.deleteDocOne(_getReceptorColName(), String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, principal));
+        home.updateDocOne(_getReceptorColName(),
+                Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, principal)),
+                Document.parse("{'$set':{'tuple.delFlag':1}}"));
     }
 
+    @Override
+    public void recoverReceptor(String principal, String id) {
+        home.updateDocOne(_getReceptorColName(),
+                Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, principal)),
+                Document.parse("{'$set':{'tuple.delFlag':0}}"));
+    }
     @Override
     public GeoReceptor get(String id) {
         String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.id':'?(id)'}");
@@ -140,14 +149,30 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
+    public List<GeoReceptor> listMyDeletedReceptor(String principal) {
+        String cjql;
+        IQuery<GeoReceptor> query;
+        cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)','tuple.delFlag':1}");
+        query = home.createQuery(cjql);
+        query.setParameter("colname", _getReceptorColName());
+        query.setParameter("clazz", GeoReceptor.class.getName());
+        query.setParameter("creator", principal);
+        List<IDocument<GeoReceptor>> docs = query.getResultList();
+        List<GeoReceptor> list = new ArrayList<>();
+        for (IDocument<GeoReceptor> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
+
+
+    @Override
     public List<GeoReceptor> getAllMyReceptor(String person) {
         List<GeoReceptor> receptors = new ArrayList<>();
-        GeoCategory[] categories = this.geoCategoryService.listCategory();
-        for (GeoCategory category : categories) {
-            List<GeoReceptor> list = _listReceptor(person);
-            if (!list.isEmpty()) {
-                receptors.addAll(list);
-            }
+        List<GeoReceptor> list = _listReceptor(person);
+        if (!list.isEmpty()) {
+            receptors.addAll(list);
         }
         return receptors;
     }
@@ -186,7 +211,7 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     private List<GeoReceptor> _listReceptor(String person) {
         String cjql;
         IQuery<GeoReceptor> query;
-        cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)'}");
+        cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)','tuple.delFlag':{'$ne':1}}");
         query = home.createQuery(cjql);
         query.setParameter("colname", _getReceptorColName());
         query.setParameter("clazz", GeoReceptor.class.getName());
@@ -216,7 +241,7 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     @Override
     public void updateLeading(String creator, String id, String leading) {
         Bson filter = Document.parse(String.format("{'tuple.id':'%s','tuple.creator':'%s'}", id, creator));
-        Bson update = Document.parse(String.format("{'$set':{'tuple.leading':'%s'}}", leading));
+        Bson update = Document.parse(String.format("{'$set':{'tuple.leading':'%s','tuple.isChanged':2}}", leading));
         home.updateDocOne(_getReceptorColName(), filter, update);
     }
 

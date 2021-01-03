@@ -81,4 +81,8 @@ public interface IGeoReceptorService {
 
     List<GeosphereDocument> pageDocument2(String id, long limit, long skip);
 
+    List<GeoReceptor> listMyDeletedReceptor(String principal);
+
+    void recoverReceptor(String principal, String id);
+
 }

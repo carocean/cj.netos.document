@@ -27,6 +27,24 @@ public class GeoReceptor {
     BackgroundMode backgroundMode;
     ForegroundMode foregroundMode;
     String background;
+    int delFlag;//0是可用；1为已删除
+    int isChanged;//供追链更新感知器信息使用；0为无更新；1为更新了标题；2为更新了图标
+
+    public int getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(int delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    public int getIsChanged() {
+        return isChanged;
+    }
+
+    public void setIsChanged(int isChanged) {
+        this.isChanged = isChanged;
+    }
 
     public String getId() {
         return id;
