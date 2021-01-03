@@ -53,8 +53,10 @@ public interface IGeoReceptorPorts extends IOpenportService {
     ) throws CircuitException;
 
     @CjOpenport(usage = "查询我的已删除的感知器")
-    List<GeoReceptor> listMyDeletedReceptor(
-            ISecuritySession securitySession
+    List<GeoReceptor> pageMyDeletedReceptor(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
+            @CjOpenportParameter(usage = "记录偏移", name = "skip") long skip
     ) throws CircuitException;
 
     @CjOpenport(usage = "恢复我的已删的感知器")

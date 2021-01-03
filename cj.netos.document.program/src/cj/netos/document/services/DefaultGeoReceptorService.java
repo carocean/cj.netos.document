@@ -149,10 +149,10 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
     }
 
     @Override
-    public List<GeoReceptor> listMyDeletedReceptor(String principal) {
+    public List<GeoReceptor> pageMyDeletedReceptor(String principal, long limit, long skip) {
         String cjql;
         IQuery<GeoReceptor> query;
-        cjql = String.format("select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)','tuple.delFlag':1}");
+        cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)','tuple.delFlag':1}",limit,skip);
         query = home.createQuery(cjql);
         query.setParameter("colname", _getReceptorColName());
         query.setParameter("clazz", GeoReceptor.class.getName());

@@ -95,8 +95,8 @@ public class DefaultGeoReceptorPorts implements IGeoReceptorPorts {
     }
 
     @Override
-    public List<GeoReceptor> listMyDeletedReceptor(ISecuritySession securitySession) throws CircuitException {
-        return geoReceptorService.listMyDeletedReceptor(securitySession.principal());
+    public List<GeoReceptor> pageMyDeletedReceptor(ISecuritySession securitySession, long limit, long skip) throws CircuitException {
+        return geoReceptorService.pageMyDeletedReceptor(securitySession.principal(),limit,skip);
     }
 
     @Override
