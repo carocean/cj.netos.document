@@ -268,12 +268,14 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     @Override
     public GeoReceptor getMobileGeoReceptor(String person, String device) {
-        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(person)','tuple.device':'?(device)','tuple.moveMode':'moveableSelf'}");
+        //'tuple.device':'?(device)',注释掉的原因是：在集成第三方通知会经常变动device，而行人的device未及时同步，导致在按新的device查时查不到。目前先注释了，但会存在这样的问题：
+        //如果用户在其它设备上同时登录，这种只按用户取的移动感知器可能会取到非当前设备的感知器位置，这会影响到搜附近的猫准确性。
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(person)','tuple.moveMode':'moveableSelf'}");
         IQuery<GeoReceptor> query = home.createQuery(cjql);
         query.setParameter("colname", _getReceptorColName());
         query.setParameter("clazz", GeoReceptor.class.getName());
         query.setParameter("person", person);
-        query.setParameter("device", device);
+//        query.setParameter("device", device);
         IDocument<GeoReceptor> doc = query.getSingleResult();
         if (doc == null) {
             return null;
@@ -283,16 +285,20 @@ public class DefaultGeoReceptorService implements IGeoReceptorService {
 
     @Override
     public void updateMobileLocation(String person, String device, LatLng location) {
-        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.device':'%s','tuple.moveMode':'moveableSelf'}", person, device));
-        Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s}}", new Gson().toJson(location)));
-        home.updateDocOne(_getReceptorColName(), filter, update);
+        //'tuple.device':'%s',注释掉的原因是：在集成第三方通知会经常变动device，而行人的device未及时同步，导致在按新的device查时查不到。目前先注释了，但会存在这样的问题：
+        //        //如果用户在其它设备上同时登录，这种只按用户取的移动感知器可能会取到非当前设备的感知器位置，这会影响到搜附近的猫准确性。
+        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.moveMode':'moveableSelf'}", person));
+        Bson update = Document.parse(String.format("{'$set':{'tuple.location':%s,'tuple.device':'%s'}}", new Gson().toJson(location),device));
+        home.updateDocs(_getReceptorColName(), filter, update);
     }
 
     @Override
     public void updateMobileRadius(String person, String device, double radius) {
-        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.device':'%s','tuple.moveMode':'moveableSelf'}", person, device));
-        Bson update = Document.parse(String.format("{'$set':{'tuple.radius':'%s'}}", radius));
-        home.updateDocOne(_getReceptorColName(), filter, update);
+        //'tuple.device':'%s',注释掉的原因是：在集成第三方通知会经常变动device，而行人的device未及时同步，导致在按新的device查时查不到。目前先注释了，但会存在这样的问题：
+        //        //如果用户在其它设备上同时登录，这种只按用户取的移动感知器可能会取到非当前设备的感知器位置，这会影响到搜附近的猫准确性。
+        Bson filter = Document.parse(String.format("{'tuple.creator':'%s','tuple.moveMode':'moveableSelf'}", person));
+        Bson update = Document.parse(String.format("{'$set':{'tuple.radius':'%s','tuple.device':'%s'}}", radius,device));
+        home.updateDocs(_getReceptorColName(), filter, update);
     }
 
     @Override
